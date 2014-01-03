@@ -1,0 +1,30 @@
+{
+  "name": "linez",
+  "version": "0.0.1-dev",
+  "homepage": "https://github.com/jedmao/linez",
+  "authors": [
+    "Jed Hunsaker <jed.hunsaker+npm@gmail.com>"
+  ],
+  "description": "Parse lines from text.",
+  "main": "./lib/api.js",
+  "keywords": [
+    "lines",
+    "line",
+    "parse",
+    "text"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "dt-mocha": "~1.9.0",
+    "dt-node": "https://github.com/jedmao/dt-node.git",
+    "dt-sinon": "~1.5.0",
+    "dt-sinon-chai": "~2.4.0"
+  }
+}
