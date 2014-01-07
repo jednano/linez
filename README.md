@@ -18,3 +18,7 @@ Released under the MIT license.
 [Dependency Status]: https://gemnasium.com/jedmao/linez.png
 [NPM version]: https://badge.fury.io/js/linez.png
 [Views]: https://sourcegraph.com/api/repos/github.com/jedmao/linez/counters/views-24h.png
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/jedmao/linez/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
