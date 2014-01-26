@@ -16,20 +16,18 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
   <ItemGroup>
-    <Content Include=".bowerrc" />
     <Content Include=".editorconfig" />
     <Content Include=".gitattributes" />
     <Content Include=".gitignore" />
+    <Content Include=".npmignore" />
     <Content Include=".travis.yml" />
     <Content Include="bower.json" />
-    <Content Include="install" />
-    <Content Include="LICENSE" />
     <Content Include="linez.njsproj" />
     <Content Include="package.json" />
     <Content Include="CHANGELOG.md" />
     <Content Include="README.md" />
-    <Content Include="test\common.ts" />
     <Content Include="test\lib\linez.ts" />
+    <Content Include="test\sinon-chai.ts" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="lib\" />
@@ -37,7 +35,7 @@
     <Folder Include="test\lib\" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Gruntfile.js" />
+    <Compile Include="Gulpfile.js" />
     <Compile Include="lib\api.js" />
     <Compile Include="lib\linez.ts" />
   </ItemGroup>

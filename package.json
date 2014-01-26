@@ -3,38 +3,40 @@
   "version": "0.0.1-dev",
   "author": "Jed Hunsaker <jed.hunsaker+npm@gmail.com>",
   "description": "Parse lines from text.",
-  "main": "./lib/api.js",
-  "scripts": {
-    "test": "grunt test"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/jedmao/linez.git"
-  },
-  "dependencies": {
-    "typescript-require": "~0.2.4"
-  },
-  "devDependencies": {
-    "bower": "~1.2.8",
-    "chai": "~1.8.1",
-    "grunt": "~0.4.2",
-    "grunt-contrib-clean": "~0.5.0",
-    "grunt-contrib-watch": "~0.5.3",
-    "grunt-mocha-test": "~0.8.1",
-    "grunt-typescript": "~0.2.7",
-    "mocha": "~1.16.2",
-    "sinon": "~1.7.3",
-    "sinon-chai": "~2.4.0"
-  },
   "keywords": [
     "lines",
     "line",
     "parse",
     "text"
   ],
-  "license": "MIT",
+  "main": "./lib/api.js",
+  "scripts": {
+    "test": "gulp mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jedmao/linez.git"
+  },
+  "homepage": "https://github.com/jedmao/linez",
   "bugs": {
     "url": "https://github.com/jedmao/linez/issues"
   },
-  "homepage": "https://github.com/jedmao/linez"
+  "license": "MIT",
+  "dependencies": {
+    "promise-ts": "~0.1.0",
+    "typescript-require": "~0.2.4"
+  },
+  "devDependencies": {
+    "bower": "~1.2.8",
+    "chai": "~1.8.1",
+    "gulp": "~3.5.0",
+    "gulp-clean": "~0.2.4",
+    "gulp-mocha": "~0.4.1",
+    "gulp-watch": "~0.5.0",
+    "mocha": "~1.16.2",
+    "sinon": "~1.7.3",
+    "sinon-chai": "~2.4.0",
+    "ts-compiler": "~0.1.0",
+    "typescript": "~0.9.5"
+  }
 }

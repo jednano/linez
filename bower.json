@@ -23,7 +23,7 @@
   ],
   "devDependencies": {
     "dt-mocha": "~1.9.0",
-    "dt-node": "https://github.com/jedmao/dt-node.git",
+    "dt-node": "*",
     "dt-sinon": "~1.5.0",
     "dt-sinon-chai": "~2.4.0"
   }
