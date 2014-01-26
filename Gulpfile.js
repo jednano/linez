@@ -15,7 +15,7 @@ gulp.task('typescript', function(done) {
 	bc.on('error', function(err) {
 		throw err;
 	});
-	bc.compile(tsFiles, { module: 'commonjs' }).done(function() {
+	bc.compile(tsFiles, { module: 'commonjs', target: 'ES5' }).done(function() {
 		done();
 	});
 });
