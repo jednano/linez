@@ -32,7 +32,12 @@ gulp.task('clean', function() {
 
 gulp.task('mocha', ['clean', 'typescript'], function() {
 	gulp.src('test/**/*.js')
-		.pipe(mocha({ reporter: 'spec' }));
+		.pipe(mocha({ reporter: 'spec' }))
+		.on('error', function(err) {
+			if (!/tests? failed/.test(err.stack)) {
+				console.log(err.stack);
+			}
+		});
 });
 
 gulp.task('watch', function() {
