@@ -8,7 +8,7 @@ import BOM = require('../../lib/BOM');
 
 // ReSharper disable WrongExpressionStatement
 describe('Line', () => {
-	describe('Byte Order Mark (BOM signature)', () => {
+	describe('BOM signature', () => {
 
 		it('is ignored when not line number 1', () => {
 			var line = new Line('\u00EF\u00BB\u00BFfoo\n');
