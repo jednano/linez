@@ -29,7 +29,7 @@ Object.keys(map).forEach((key: string) => {
 class Newline {
 	constructor(public character: string) {
 		if (!Newline.pattern.test(character)) {
-			throw new Error('Invalid or unsupported newline character.');
+			throw new Error('Invalid or unsupported newline character');
 		}
 	}
 
@@ -49,7 +49,7 @@ class Newline {
 		return this.character;
 	}
 
-	static pattern = /\n|\r(?!\n)|\u2028|\u2029|\r\n/;
+	static pattern = /\n|\r(?!\n)|\u000B|\u000C|\u0085|\u2028|\u2029|\r\n/;
 
 	static map = map;
 
