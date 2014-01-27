@@ -2,12 +2,12 @@
 import Newline = require('./Newline');
 import charsets = require('./charsets');
 import LineOptions = require('./LineOptions');
-import bom = require('./bom');
+import BOM = require('./BOM');
 
 
 class Line {
 	private _number: number;
-	private _bom: string;
+	private _bom: BOM;
 	private _newline: Newline;
 	private _text: string;
 	private _charset: charsets;
@@ -16,12 +16,12 @@ class Line {
 		options = options || {};
 		this._number = options.number;
 		if (this._number === 1) {
-			this.bom = bom.parse(raw);
+			this.bom = BOM.detectLeadingBOM(raw);
 		}
 		this.newline = this.parseNewline(raw);
 		this.text = options.text || this.parseLineForText(raw);
 		this.bom = options.bom || this.bom;
-		this.charset = options.charset || bom.reverseMap[this.bom];
+		this.charset = options.charset || this.bom && this.bom.charset;
 	}
 
 	get number(): number {
@@ -35,10 +35,10 @@ class Line {
 		}
 		this._number = value;
 		if (value === 1) {
-			var parsedBom = bom.parse(this._text);
+			var parsedBom = BOM.detectLeadingBOM(this._text);
 			if (parsedBom) {
 				this._bom = parsedBom;
-				this._charset = bom.reverseMap[parsedBom];
+				this._charset = this._bom.charset;
 				this._text = this._text.substr(parsedBom.length);
 			}
 		} else {
@@ -47,22 +47,18 @@ class Line {
 		}
 	}
 
-	get bom(): string {
+	get bom(): BOM {
 		return this._bom;
 	}
 
-	set bom(value: string) {
+	set bom(value: BOM) {
 		if (!value) {
 			delete this._bom;
 			delete this._charset;
 			return;
 		}
-		var charset: charsets = charsets[charsets[bom.reverseMap[value]]];
-		if (!charset) {
-			throw new Error('Invalid or unsupported BOM signature');
-		}
 		this._bom = value;
-		this._charset = charset;
+		this._charset = this._bom.charset;
 		this._number = 1;
 	}
 
@@ -77,7 +73,7 @@ class Line {
 			return;
 		}
 		this._charset = value;
-		this._bom = bom.map[charsets[charsets[value]]];
+		this._bom = new BOM(BOM.map[this._charset]);
 	}
 
 	get text(): string {

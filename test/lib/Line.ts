@@ -3,10 +3,11 @@ import sinonChai = require('../sinon-chai');
 var expect = sinonChai.expect;
 import Line = require('../../lib/Line');
 import charsets = require('../../lib/charsets');
+import BOM = require('../../lib/BOM');
 
 
 // ReSharper disable WrongExpressionStatement
-describe('Line Class', () => {
+describe('Line', () => {
 	describe('Byte Order Mark (BOM signature)', () => {
 
 		it('is ignored when not line number 1', () => {
@@ -20,58 +21,21 @@ describe('Line Class', () => {
 			var line = new Line('\u00EF\u00BB\u00BFfoo');
 			expect(line.bom).to.be.undefined;
 			line.number = 1;
-			expect(line.bom).to.equal('\u00EF\u00BB\u00BF');
+			expect(line.bom.signature).to.equal('\u00EF\u00BB\u00BF');
 			expect(line.charset).to.equal(charsets.utf_8_bom);
 			expect(line.text).to.equal('foo');
 		});
 
-		it('detects utf-8-bom charset', () => {
-			var line = new Line('\u00EF\u00BB\u00BFfoo\n', { number: 1 });
-			expect(line.bom).to.equal('\u00EF\u00BB\u00BF');
-			expect(line.charset).to.equal(charsets.utf_8_bom);
-		});
-
-		it('detects utf-16be charset', () => {
-			var line = new Line('\u00FE\u00FFfoo', { number: 1 });
-			expect(line.bom).to.equal('\u00FE\u00FF');
-			expect(line.charset).to.equal(charsets.utf_16be);
-		});
-
-		it('detects utf-16le charset', () => {
-			var line = new Line('\u00FF\u00FEfoo', { number: 1 });
-			expect(line.bom).to.equal('\u00FF\u00FE');
-			expect(line.charset).to.equal(charsets.utf_16le);
-		});
-
-		it('detects utf-32le charset', () => {
-			var line = new Line('\u00FF\u00FE\u0000\u0000foo', { number: 1 });
-			expect(line.bom).to.equal('\u00FF\u00FE\u0000\u0000');
-			expect(line.charset).to.equal(charsets.utf_32le);
-		});
-
-		it('detects utf-32be charset', () => {
-			var line = new Line('\u0000\u0000\u00FE\u00FFfoo', { number: 1 });
-			expect(line.bom).to.equal('\u0000\u0000\u00FE\u00FF');
-			expect(line.charset).to.equal(charsets.utf_32be);
-		});
-
 		it('allows creation of a solo BOM signature', () => {
 			var line = new Line('\u0000\u0000\u00FE\u00FF', { number: 1 });
-			expect(line.bom).to.equal('\u0000\u0000\u00FE\u00FF');
+			expect(line.bom.signature).to.equal('\u0000\u0000\u00FE\u00FF');
 			expect(line.charset).to.equal(charsets.utf_32be);
-		});
-
-		it('throws an error if invalid or unsupported', () => {
-			var fn = () => {
-				new Line('', { bom: '\u00AA' });
-			};
-			expect(fn).to.throw(Error, 'Invalid or unsupported BOM signature');
 		});
 	});
 
 	it('separates line text from the BOM signature and newline character', () => {
 		var line = new Line('\u00EF\u00BB\u00BFfoo\n', { number: 1 });
-		expect(line.bom).to.equal('\u00EF\u00BB\u00BF');
+		expect(line.bom.signature).to.equal('\u00EF\u00BB\u00BF');
 		expect(line.charset).to.equal(charsets.utf_8_bom);
 		expect(line.text).to.equal('foo');
 		expect(line.newline.character).to.equal('\n');

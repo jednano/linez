@@ -6,7 +6,7 @@ import charsets = require('../../lib/charsets');
 
 
 // ReSharper disable WrongExpressionStatement
-describe('Newline Class', () => {
+describe('Newline', () => {
 
 	it('detects line feed newline character', () => {
 		var nl = new Newline('\n');

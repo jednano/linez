@@ -1,10 +1,11 @@
 ﻿import charsets = require('./charsets');
 import Newline = require('./Newline');
+import BOM = require('./BOM');
 
 
 interface LineOptions {
 	number?: number;
-	bom?: string;
+	bom?: BOM;
 	charset?: charsets;
 	newline?: Newline;
 	text?: string;
