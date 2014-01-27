@@ -9,14 +9,14 @@ import charsets = require('../../lib/charsets');
 describe('Line Class', () => {
 	describe('Byte Order Mark (BOM signature)', () => {
 
-		it('ignores BOM signature when not line number 1', () => {
+		it('is ignored when not line number 1', () => {
 			var line = new Line('\u00EF\u00BB\u00BFfoo\n');
 			expect(line.bom).to.be.undefined;
 			expect(line.charset).to.be.undefined;
 			expect(line.text).to.equal('\u00EF\u00BB\u00BFfoo');
 		});
 
-		it('detects BOM signature when assigned line number 1', () => {
+		it('is detected when assigned line number 1', () => {
 			var line = new Line('\u00EF\u00BB\u00BFfoo');
 			expect(line.bom).to.be.undefined;
 			line.number = 1;
@@ -55,12 +55,18 @@ describe('Line Class', () => {
 			expect(line.charset).to.equal(charsets.utf_32be);
 		});
 
-		it('allows creation of a solo BOM signature character', () => {
+		it('allows creation of a solo BOM signature', () => {
 			var line = new Line('\u0000\u0000\u00FE\u00FF', { number: 1 });
 			expect(line.bom).to.equal('\u0000\u0000\u00FE\u00FF');
 			expect(line.charset).to.equal(charsets.utf_32be);
 		});
 
+		it('throws an error if invalid or unsupported', () => {
+			var fn = () => {
+				new Line('', { bom: '\u00AA' });
+			};
+			expect(fn).to.throw(Error, 'Invalid or unsupported BOM signature');
+		});
 	});
 
 	it('separates line text from the BOM signature and newline character', () => {
@@ -82,21 +88,14 @@ describe('Line Class', () => {
 		expect(line.raw).to.be.undefined;
 	});
 
-	it('allows creation of an empty line, but the text is undefined', () => {
+	it('allows creation of an empty line', () => {
 		var line = new Line('');
-		expect(line.text).to.be.undefined;
+		expect(line.text).to.equal('');
 	});
 
 	it('allows creation of a solo newline character', () => {
 		var line = new Line('\n');
-		expect(line.text).to.be.undefined;
+		expect(line.text).to.equal('');
 		expect(line.newline.character).to.equal('\n');
-	});
-
-	it('throws an error if the BOM is invalid or unsupported', () => {
-		var fn = () => {
-			new Line('', { bom: '\u00AA' });
-		};
-		expect(fn).to.throw(Error, 'Invalid or unsupported BOM signature');
 	});
 });

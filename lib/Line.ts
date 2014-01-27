@@ -85,7 +85,7 @@ class Line {
 	}
 
 	set text(value: string) {
-		if (!value) {
+		if (!value && value !== '') {
 			delete this._text;
 			return;
 		}
@@ -113,16 +113,13 @@ class Line {
 	}
 
 	private parseLineForText(s: string): string {
-		if (!s) {
+		if (!s && s !== '') {
 			// ReSharper disable once InconsistentFunctionReturns
 			return;
 		}
 		var start = this._bom ? this._bom.length : 0;
 		var length = s.length - start - (this._newline ? this._newline.length : 0);
-		s = s.substr(start, length);
-		if (s !== '') {
-			return s;
-		}
+		return s.substr(start, length);
 	}
 
 	private parseNewline(s: string): Newline {
