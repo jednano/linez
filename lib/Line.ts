@@ -21,7 +21,7 @@ class Line {
 		this.newline = this.parseNewline(raw);
 		this.text = options.text || this.parseLineForText(raw);
 		this.bom = options.bom || this.bom;
-		this.charsets = options.charset || bom.reverseMap[this.bom];
+		this.charset = options.charset || bom.reverseMap[this.bom];
 	}
 
 	get number(): number {
@@ -59,25 +59,25 @@ class Line {
 		}
 		var charset: charsets = charsets[charsets[bom.reverseMap[value]]];
 		if (!charset) {
-			throw new Error('Invalid or unsupported BOM signature.');
+			throw new Error('Invalid or unsupported BOM signature');
 		}
 		this._bom = value;
 		this._charset = charset;
 		this._number = 1;
 	}
 
-	get charsets(): charsets {
+	get charset(): charsets {
 		return this._charset;
 	}
 
-	set charsets(value: charsets) {
+	set charset(value: charsets) {
 		if (!value) {
 			delete this._charset;
 			delete this._bom;
 			return;
 		}
 		this._charset = value;
-		this._bom = bom.map[charsets[value]];
+		this._bom = bom.map[charsets[charsets[value]]];
 	}
 
 	get text(): string {
@@ -114,7 +114,8 @@ class Line {
 
 	private parseLineForText(s: string): string {
 		if (!s) {
-			return undefined;
+			// ReSharper disable once InconsistentFunctionReturns
+			return;
 		}
 		var start = this._bom ? this._bom.length : 0;
 		var length = s.length - start - (this._newline ? this._newline.length : 0);
@@ -122,7 +123,6 @@ class Line {
 		if (s !== '') {
 			return s;
 		}
-		// ReSharper disable once NotAllPathsReturnValue
 	}
 
 	private parseNewline(s: string): Newline {
@@ -132,7 +132,7 @@ class Line {
 			return;
 		}
 		if (m.length > 1) {
-			throw new Error('A line cannot have more than one newline character.');
+			throw new Error('A line cannot have more than one newline character');
 		}
 		return new Newline(m[0]);
 	}
