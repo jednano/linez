@@ -1,8 +1,8 @@
 ﻿/// <reference path="../node_modules/promise-ts/promise.d.ts" />
-import P = require('promise-ts');
-var Deferred = P.Deferred;
 import Newline = require('./Newline');
 import Line = require('./Line');
+import P = require('promise-ts');
+var Deferred = P.Deferred;
 
 
 export function parse(text: string): P.Promise {

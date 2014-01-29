@@ -1,13 +1,14 @@
 ﻿import linez = require('../../lib/linez');
+import Line = require('../../lib/Line');
+import BOM = require('../../lib/BOM');
+import charsets = require('../../lib/charsets');
 import sinonChai = require('../sinon-chai');
 var expect = sinonChai.expect;
-import Line = require('../../lib/Line');
-import charsets = require('../../lib/charsets');
-import BOM = require('../../lib/BOM');
 
 
 // ReSharper disable WrongExpressionStatement
 describe('Line', () => {
+
 	describe('BOM signature', () => {
 
 		it('is ignored when not line number 1', () => {
