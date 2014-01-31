@@ -1,8 +1,8 @@
-﻿import linez = require('../../lib/linez');
-import sinonChai = require('../sinon-chai');
+﻿import sinonChai = require('../sinon-chai');
 var expect = sinonChai.expect;
-import charsets = require('../../lib/charsets');
-import BOM = require('../../lib/BOM');
+import linez = require('../../lib/api');
+var charsets = linez.charsets;
+var BOM = linez.BOM;
 
 
 // ReSharper disable WrongExpressionStatement

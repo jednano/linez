@@ -1,5 +1,7 @@
 # linez
 
+> Parses lines from text, preserving BOM signature and newline characters.
+
 [![Build Status][]](http://travis-ci.org/jedmao/linez)
 [![Dependency Status][]](https://gemnasium.com/jedmao/linez)
 [![NPM version][]](http://badge.fury.io/js/linez)
@@ -7,7 +9,36 @@
 
 [![NPM](https://nodei.co/npm/linez.png?downloads=true)](https://nodei.co/npm/linez/)
 
-Parse lines from text.
+## Usage
+
+
+### TypeScript
+
+```ts
+/// <reference path="node_modules/linez/linez.d.ts" />
+import linez = require('linez');
+
+linez.parse('foo\nbar\n').done((lines: Line[]) => {
+    lines.length; // 2
+    lines[0].text; // foo
+    lines[1].text; // bar
+    lines[1].newline.character; // linez.Newline.map.lf
+});
+```
+
+
+### JavaScript
+
+```js
+var linez = require('linez');
+
+linez.parse('foo\nbar\n').done(function(lines) {
+    lines.length; // 2
+    lines[0].text; // foo
+    lines[1].text; // bar
+    lines[1].newline.character; // linez.Newline.map.lf
+});
+```
 
 
 ## License

@@ -2,12 +2,14 @@
   "name": "linez",
   "version": "0.0.1-dev",
   "author": "Jed Hunsaker <jed.hunsaker+npm@gmail.com>",
-  "description": "Parse lines from text.",
+  "description": "Parse lines from text, perserving BOM signature and newline characters.",
   "keywords": [
     "lines",
     "line",
     "parse",
-    "text"
+    "text",
+    "bom",
+    "newline"
   ],
   "main": "./lib/api.js",
   "scripts": {
@@ -26,8 +28,8 @@
   },
   "license": "MIT",
   "dependencies": {
-    "promise-ts": "~0.1.0",
-    "typescript-require": "~0.2.4"
+    "typescript-require": "~0.2.4",
+    "promise-ts": "~0.2.2"
   },
   "devDependencies": {
     "bower": "~1.2.8",
@@ -40,6 +42,7 @@
     "sinon": "~1.7.3",
     "sinon-chai": "~2.4.0",
     "ts-compiler": "~0.1.0",
-    "typescript": "~0.9.5"
+    "typescript": "~0.9.5",
+    "run-sequence": "~0.3.2"
   }
 }

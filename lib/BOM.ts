@@ -8,7 +8,7 @@ map[charsets.utf_32le] = '\u00FF\u00FE\u0000\u0000';
 map[charsets.utf_16le] = '\u00FF\u00FE';
 map[charsets.utf_32be] = '\u0000\u0000\u00FE\u00FF';
 
-var reverseMap: { [id: string]: charsets } = {}; 
+var reverseMap: { [id: string]: charsets } = {};
 var chars = [];
 Object.keys(map).forEach((key: string) => {
 	var bom = map[key];

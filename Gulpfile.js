@@ -2,6 +2,7 @@
 var clean = require('gulp-clean');
 var mocha = require('gulp-mocha');
 var watch = require('gulp-watch');
+var runSequence = require('run-sequence');
 
 
 var tsFiles = [
@@ -15,7 +16,10 @@ gulp.task('typescript', function(done) {
 	bc.on('error', function(err) {
 		throw err;
 	});
-	bc.compile(tsFiles, { module: 'commonjs', target: 'ES5' }).done(function() {
+	bc.compile(tsFiles, {
+		module: 'commonjs',
+		target: 'ES5'
+	}).done(function() {
 		done();
 	});
 });
@@ -30,8 +34,22 @@ gulp.task('clean', function() {
 		.pipe(clean());
 });
 
-gulp.task('mocha', ['clean', 'typescript'], function() {
-	gulp.src('test/**/*.js')
+gulp.task('test:pre', function(cb) {
+	runSequence('clean', 'typescript', cb);
+});
+
+gulp.task('test', ['test:pre'], function() {
+	gulp.src(['test/**/*.js'], { read: false })
+		.pipe(mocha({ reporter: 'spec' }))
+		.on('error', function(err) {
+			if (!/tests? failed/.test(err.stack)) {
+				console.log(err.stack);
+			}
+		});
+});
+
+gulp.task('test:vs', function() {
+	gulp.src(['test/**/*.js'], { read: false })
 		.pipe(mocha({ reporter: 'spec' }))
 		.on('error', function(err) {
 			if (!/tests? failed/.test(err.stack)) {
@@ -41,11 +59,13 @@ gulp.task('mocha', ['clean', 'typescript'], function() {
 });
 
 gulp.task('watch', function() {
-	gulp.watch([
-		'lib/**/*.ts',
-		'lib/api.js',
-		'test/**/*.ts'
-	], ['mocha']);
+	gulp.watch(tsFiles, ['test']);
 });
 
-gulp.task('default', ['mocha']);
+gulp.task('watch:vs', function() {
+	gulp.watch(tsFiles.map(function(glob) {
+		return glob.replace(/\.ts$/, '.js');
+	}), ['test:vs']);
+});
+
+gulp.task('default', ['test']);
