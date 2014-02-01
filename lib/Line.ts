@@ -18,7 +18,7 @@ class Line {
 		if (this._number === 1) {
 			this.bom = BOM.detect(raw);
 		}
-		this.newline = this.parseNewline(raw);
+		this.newline = Newline.detect(raw);
 		this.text = options.text || this.parseLineForText(raw);
 		this.bom = options.bom || this.bom;
 		this.charset = options.charset || this.bom && this.bom.charset;
@@ -117,18 +117,6 @@ class Line {
 		var start = this._bom ? this._bom.length : 0;
 		var length = s.length - start - (this._newline ? this._newline.length : 0);
 		return s.substr(start, length);
-	}
-
-	private parseNewline(s: string): Newline {
-		var m = s && s.match(new RegExp(Newline.pattern.source, 'g'));
-		if (!m) {
-			// ReSharper disable once InconsistentFunctionReturns
-			return;
-		}
-		if (m.length > 1) {
-			throw new Error('A line cannot have more than one newline character');
-		}
-		return new Newline(m[0]);
 	}
 
 	public toString() {

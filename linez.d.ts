@@ -17,19 +17,11 @@ declare module Linez {
 
 	class BOM {
 		public signature: string;
-		constructor(signature: string);
+		constructor(signature?: string);
 		public charset: charsets;
 		public length: number;
 		public toString(): string;
-		static detectLeadingBOM(s: string): BOM;
-		private static matchOrder;
-		static pattern: RegExp;
-		static map: {
-			[id: number]: string;
-		};
-		static reverseMap: {
-			[id: string]: charsets;
-		};
+		static detect(s: string): BOM;
 	}
 
 	enum charsets {
@@ -56,7 +48,6 @@ declare module Linez {
 		public newline: Newline;
 		public raw: string;
 		private parseLineForText(s);
-		private parseNewline(s);
 		public toString(): string;
 	}
 
@@ -81,13 +72,12 @@ declare module Linez {
 
 	class Newline {
 		public character: string;
-		constructor(character: string);
+		constructor(character?: string);
 		public name: string;
 		public length: number;
 		public toString(): string;
 		static pattern: RegExp;
-		static reverseMap: {};
-		static chars: any[];
+		static detect(lineText: string): Newline;
 	}
 
 	function parse(text: string): PromiseTs.Promise;
