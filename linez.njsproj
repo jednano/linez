@@ -27,6 +27,8 @@
     <Content Include=".gitignore" />
     <Content Include=".npmignore" />
     <Content Include=".travis.yml" />
+    <Content Include="lib\boms.ts" />
+    <Content Include="lib\newlines.ts" />
     <Content Include="linez.d.ts" />
     <Content Include="bower.json" />
     <Content Include="lib\BOM.ts" />

@@ -35,10 +35,22 @@ declare module Linez {
 	}
 
 	class Line {
+		/**
+		 * Setting to a value of 1 will detect and set both BOM signature and charset.
+		 * Setting to a value other than 1 will delete both BOM signature and charset.
+		 */
 		private _number;
+		/**
+		 * Setting the bom changes the line number to 1 and sets the
+		 * appropriate charset for the new BOM signature.
+		 */
 		private _bom;
 		private _newline;
 		private _text;
+		/**
+		 * Setting the charset changes the line number to 1 and sets the
+		 * appropriate BOM signature for the new charset.
+		 */
 		private _charset;
 		constructor(raw?: string, options?: LineOptions);
 		public number: number;
@@ -46,11 +58,22 @@ declare module Linez {
 		public charset: charsets;
 		public text: string;
 		public newline: Newline;
+		/**
+		 * Gets the BOM signature plus the line text plus the newline.
+		 */
 		public raw: string;
 		private parseLineForText(s);
+		/**
+		 * Returns just the text portion of the line, with the BOM and newline
+		 * stripped off. This is the same as getting line.text.
+		 */
 		public toString(): string;
 	}
 
+	/**
+	 * Used to explicitly set properties on a line upon creation.
+	 * Line options will override anything parsed from the raw line string.
+	 */
 	interface LineOptions {
 		number?: number;
 		bom?: BOM;
@@ -76,6 +99,9 @@ declare module Linez {
 		public name: string;
 		public length: number;
 		public toString(): string;
+		/**
+		 * Gets the newline pattern used to parse newlines out of text.
+		 */
 		static pattern: RegExp;
 		static detect(lineText: string): Newline;
 	}

@@ -35,6 +35,9 @@ class Newline {
 		return this.character;
 	}
 
+	/**
+	 * Gets the newline pattern used to parse newlines out of text.
+	 */
 	static pattern = newlinePat;
 
 	static detect(lineText: string): Newline {

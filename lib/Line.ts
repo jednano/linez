@@ -28,6 +28,10 @@ class Line {
 		return this._number;
 	}
 
+	/**
+	 * Setting to a value of 1 will detect and set both BOM signature and charset.
+	 * Setting to a value other than 1 will delete both BOM signature and charset.
+	 */
 	set number(value: number) {
 		if (!value) {
 			delete this._number;
@@ -51,6 +55,10 @@ class Line {
 		return this._bom;
 	}
 
+	/**
+	 * Setting the bom changes the line number to 1 and sets the
+	 * appropriate charset for the new BOM signature.
+	 */
 	set bom(value: BOM) {
 		if (!value) {
 			delete this._bom;
@@ -66,6 +74,10 @@ class Line {
 		return this._charset;
 	}
 
+	/**
+	 * Setting the charset changes the line number to 1 and sets the
+	 * appropriate BOM signature for the new charset.
+	 */
 	set charset(value: charsets) {
 		if (!value) {
 			delete this._charset;
@@ -101,6 +113,9 @@ class Line {
 		this._newline = value;
 	}
 
+	/**
+	 * Gets the BOM signature plus the line text plus the newline.
+	 */
 	get raw(): string {
 		if (this._bom || this._text || this._newline) {
 			return (this._bom || '') + (this._text || '') +
@@ -119,6 +134,10 @@ class Line {
 		return s.substr(start, length);
 	}
 
+	/**
+	 * Returns just the text portion of the line, with the BOM and newline
+	 * stripped off. This is the same as getting line.text.
+	 */
 	public toString() {
 		return this._text;
 	}
