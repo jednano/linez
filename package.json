@@ -1,6 +1,6 @@
 {
   "name": "linez",
-  "version": "0.0.1-dev",
+  "version": "0.1.0",
   "author": "Jed Hunsaker <jed.hunsaker+npm@gmail.com>",
   "description": "Parse lines from text, perserving BOM signature and newline characters.",
   "keywords": [
