@@ -48,7 +48,7 @@ gulp.task('test', ['test:pre'], function() {
 		});
 });
 
-gulp.task('test:vs', function() {
+gulp.task('test:js', function() {
 	gulp.src(['test/**/*.js'], { read: false })
 		.pipe(mocha({ reporter: 'spec' }))
 		.on('error', function(err) {
@@ -62,10 +62,10 @@ gulp.task('watch', function() {
 	gulp.watch(tsFiles, ['test']);
 });
 
-gulp.task('watch:vs', function() {
+gulp.task('watch:js', function() {
 	gulp.watch(tsFiles.map(function(glob) {
 		return glob.replace(/\.ts$/, '.js');
-	}), ['test:vs']);
+	}), ['test:js']);
 });
 
 gulp.task('default', ['test']);
