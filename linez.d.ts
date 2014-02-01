@@ -60,6 +60,17 @@ declare module Linez {
 		text?: string;
 	}
 
+	var newlines: {
+		lf: string;
+		crlf: string;
+		cr: string;
+		vt: string;
+		ff: string;
+		nel: string;
+		ls: string;
+		ps: string;
+	};
+
 	class Newline {
 		public character: string;
 		constructor(character: string);
@@ -67,16 +78,6 @@ declare module Linez {
 		public length: number;
 		public toString(): string;
 		static pattern: RegExp;
-		static map: {
-			lf: string;
-			crlf: string;
-			cr: string;
-			vt: string;
-			ff: string;
-			nel: string;
-			ls: string;
-			ps: string;
-		};
 		static reverseMap: {};
 		static chars: any[];
 	}

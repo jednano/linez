@@ -9,6 +9,7 @@ var Deferred = p.Deferred;
 export var BOM = require('./BOM');
 export var charsets = require('./charsets');
 export var Line = _Line;
+export var newlines = require('./newlines');
 export var Newline = require('./Newline');
 
 export function parse(text: string): p.Promise {

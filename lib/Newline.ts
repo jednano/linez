@@ -1,27 +1,11 @@
-﻿var map = {
-	// Line Feed, U+000A
-	lf: '\n',
-	// Carriage Return + Line Feed
-	crlf: '\r\n',
-	// Carriage Return, U+000D
-	cr: '\r',
-	// Vertical Tab
-	vt: '\u000B',
-	// Form Feed
-	ff: '\u000C',
-	// Next Line
-	nel: '\u0085',
-	// Line Separator
-	ls: '\u2028',
-	// Paragraph Separator
-	ps: '\u2029'
-};
+﻿import newlines = require('./newlines');
+
 
 var reverseMap = {};
 var chars = [];
 
-Object.keys(map).forEach((key: string) => {
-	var c = map[key];
+Object.keys(newlines).forEach((key: string) => {
+	var c = newlines[key];
 	reverseMap[c] = key;
 	chars.push(c);
 });
@@ -38,7 +22,7 @@ class Newline {
 	}
 
 	set name(value: string) {
-		this.character = map[value];
+		this.character = newlines[value];
 	}
 
 	get length(): number {
@@ -50,8 +34,6 @@ class Newline {
 	}
 
 	static pattern = /\n|\r(?!\n)|\u000B|\u000C|\u0085|\u2028|\u2029|\r\n/;
-
-	static map = map;
 
 	static reverseMap = reverseMap;
 

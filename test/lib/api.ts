@@ -2,6 +2,7 @@
 var expect = sinonChai.expect;
 import linez = require('../../lib/api');
 import Line = require('../../lib/Line');
+import newlines = require('../../lib/newlines');
 import Newline = require('../../lib/Newline');
 import charsets = require('../../lib/charsets');
 
@@ -38,10 +39,10 @@ describe('linez', () => {
 			expect(lines).to.have.lengthOf(2);
 			var line1 = lines[0];
 			expect(line1.text).to.equal('foo');
-			expect(line1.newline.character).to.equal(Newline.map.crlf);
+			expect(line1.newline.character).to.equal(newlines.crlf);
 			var line2 = lines[1];
 			expect(line2.text).to.eq('bar');
-			expect(line2.newline.character).to.eq(Newline.map.lf);
+			expect(line2.newline.character).to.eq(newlines.lf);
 			done();
 		});
 	});
