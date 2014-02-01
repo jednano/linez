@@ -1,24 +1,33 @@
 ﻿import charsets = require('./charsets');
+import boms = require('./boms');
 
 
 var map: { [id: number]: string } = {};
-map[charsets.utf_8_bom] = '\u00EF\u00BB\u00BF';
-map[charsets.utf_16be] = '\u00FE\u00FF';
-map[charsets.utf_32le] = '\u00FF\u00FE\u0000\u0000';
-map[charsets.utf_16le] = '\u00FF\u00FE';
-map[charsets.utf_32be] = '\u0000\u0000\u00FE\u00FF';
+map[charsets.utf_8_bom] = boms.utf_8;
+map[charsets.utf_16le] = boms.utf_16le;
+map[charsets.utf_16be] = boms.utf_16be;
+map[charsets.utf_32le] = boms.utf_32le;
+map[charsets.utf_32be] = boms.utf_32be;
 
 var reverseMap: { [id: string]: charsets } = {};
-var chars = [];
 Object.keys(map).forEach((key: string) => {
 	var bom = map[key];
 	reverseMap[bom] = parseInt(key, 10);
-	chars.push(bom);
 });
 
+var matchOrder = [
+	boms.utf_8,
+	boms.utf_32le,
+	boms.utf_16be,
+	boms.utf_16le,
+	boms.utf_32be
+];
+
+var bomPat = new RegExp('^(' + matchOrder.join('|') + ')');
+
 class BOM {
-	constructor(public signature: string) {
-		if (!BOM.pattern.test(signature)) {
+	constructor(public signature?: string) {
+		if (signature && !bomPat.test(signature)) {
 			throw new Error('Invalid or unsupported BOM signature');
 		}
 	}
@@ -39,27 +48,13 @@ class BOM {
 		return this.signature;
 	}
 
-	static detectLeadingBOM(s: string): BOM {
+	static detect(s: string): BOM {
 		if (s) {
-			var m = s.match(BOM.pattern);
+			var m = s.match(bomPat);
 			return m && new BOM(m[1]);
 		}
 		// ReSharper disable once NotAllPathsReturnValue
 	}
-
-	private static matchOrder = [
-		'\u00EF\u00BB\u00BF',
-		'\u00FF\u00FE\u0000\u0000',
-		'\u00FE\u00FF',
-		'\u00FF\u00FE',
-		'\u0000\u0000\u00FE\u00FF'
-	];
-
-	static pattern = new RegExp('^(' + BOM.matchOrder.join('|') + ')');
-
-	static map = map;
-
-	static reverseMap = reverseMap;
 }
 
 export = BOM;

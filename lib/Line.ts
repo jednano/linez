@@ -16,7 +16,7 @@ class Line {
 		options = options || {};
 		this._number = options.number;
 		if (this._number === 1) {
-			this.bom = BOM.detectLeadingBOM(raw);
+			this.bom = BOM.detect(raw);
 		}
 		this.newline = this.parseNewline(raw);
 		this.text = options.text || this.parseLineForText(raw);
@@ -35,7 +35,7 @@ class Line {
 		}
 		this._number = value;
 		if (value === 1) {
-			var parsedBom = BOM.detectLeadingBOM(this._text);
+			var parsedBom = BOM.detect(this._text);
 			if (parsedBom) {
 				this._bom = parsedBom;
 				this._charset = this._bom.charset;
@@ -73,7 +73,8 @@ class Line {
 			return;
 		}
 		this._charset = value;
-		this._bom = new BOM(BOM.map[this._charset]);
+		this._bom = new BOM();
+		this._bom.charset = this._charset;
 	}
 
 	get text(): string {

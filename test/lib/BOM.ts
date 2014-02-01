@@ -1,40 +1,41 @@
 ﻿import sinonChai = require('../sinon-chai');
 var expect = sinonChai.expect;
 import linez = require('../../lib/api');
-var charsets = linez.charsets;
-var BOM = linez.BOM;
+import charsets = require('../../lib/charsets');
+import boms = require('../../lib/boms');
+import BOM = require('../../lib/BOM');
 
 
 // ReSharper disable WrongExpressionStatement
 describe('Byte Order Mark (BOM signature)', () => {
 
 	it('detects utf-8-bom signature', () => {
-		var bom = new BOM('\u00EF\u00BB\u00BF');
-		expect(bom.signature).to.equal('\u00EF\u00BB\u00BF');
+		var bom = new BOM(boms.utf_8);
+		expect(bom.signature).to.equal(boms.utf_8);
 		expect(bom.charset).to.equal(charsets.utf_8_bom);
 	});
 
 	it('detects utf-16be signature', () => {
-		var bom = new BOM('\u00FE\u00FF');
-		expect(bom.signature).to.equal('\u00FE\u00FF');
+		var bom = new BOM(boms.utf_16be);
+		expect(bom.signature).to.equal(boms.utf_16be);
 		expect(bom.charset).to.equal(charsets.utf_16be);
 	});
 
 	it('detects utf-16le signature', () => {
-		var bom = new BOM('\u00FF\u00FE');
-		expect(bom.signature).to.equal('\u00FF\u00FE');
+		var bom = new BOM(boms.utf_16le);
+		expect(bom.signature).to.equal(boms.utf_16le);
 		expect(bom.charset).to.equal(charsets.utf_16le);
 	});
 
 	it('detects utf-32le signature', () => {
-		var bom = new BOM('\u00FF\u00FE\u0000\u0000');
-		expect(bom.signature).to.equal('\u00FF\u00FE\u0000\u0000');
+		var bom = new BOM(boms.utf_32le);
+		expect(bom.signature).to.equal(boms.utf_32le);
 		expect(bom.charset).to.equal(charsets.utf_32le);
 	});
 
 	it('detects utf-32be signature', () => {
-		var bom = new BOM('\u0000\u0000\u00FE\u00FF');
-		expect(bom.signature).to.equal('\u0000\u0000\u00FE\u00FF');
+		var bom = new BOM(boms.utf_32be);
+		expect(bom.signature).to.equal(boms.utf_32be);
 		expect(bom.charset).to.equal(charsets.utf_32be);
 	});
 

@@ -7,6 +7,14 @@ declare module "linez" {
 
 declare module Linez {
 
+	var boms: {
+		utf_8: string;
+		utf_16le: string;
+		utf_16be: string;
+		utf_32le: string;
+		utf_32be: string;
+	};
+
 	class BOM {
 		public signature: string;
 		constructor(signature: string);

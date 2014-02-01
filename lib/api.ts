@@ -6,6 +6,7 @@ import p = require('promise-ts');
 var Deferred = p.Deferred;
 
 
+export var boms = require('./boms');
 export var BOM = require('./BOM');
 export var charsets = require('./charsets');
 export var Line = _Line;
