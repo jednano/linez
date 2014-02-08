@@ -4,6 +4,8 @@ require('typescript-require');
 import _Line = require('./Line');
 import p = require('promise-ts');
 var Deferred = p.Deferred;
+import LineEmitter = require('./LineEmitter');
+import ILine = require('./ILine');
 
 
 export var boms = require('./boms');
@@ -13,12 +15,15 @@ export var Line = _Line;
 export var newlines = require('./newlines');
 export var Newline = require('./Newline');
 
-export function parse(text: string): p.Promise {
-	var parsing = new Deferred();
-	setTimeout(() => {
-		parsing.resolve(parseSync(text));
+export function parse(text: string, callback: Function) {
+	var emitter = new LineEmitter(text);
+	var lines: ILine[] = [];
+	emitter.on('line', (line: ILine) => {
+		lines.push(line);
 	});
-	return parsing.promise;
+	emitter.on('end', () => {
+		callback(lines);
+	});
 }
 
 export function parseSync(text: string): _Line[] {

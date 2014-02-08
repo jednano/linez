@@ -1,0 +1,19 @@
+[
+	{
+		"number": 1,
+		"text": "foo",
+		"newline": "\n",
+		"offset": 0
+	},
+	{
+		"number": 2,
+		"text": "bar",
+		"newline": "\n",
+		"offset": 4
+	},
+	{
+		"number": 3,
+		"text": "baz",
+		"offset": 8
+	}
+]

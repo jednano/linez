@@ -60,6 +60,7 @@ gulp.task('test:js', function() {
 
 gulp.task('watch', function() {
 	gulp.watch(tsFiles, ['test']);
+	//gulp.watch(['test/fixtures/*.txt'], ['test']);
 });
 
 gulp.task('watch:js', function() {
