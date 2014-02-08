@@ -2,6 +2,9 @@
 import fs = require('fs');
 import ILine = require('./ILine');
 import events = require('./events');
+import BOM = require('./BOM');
+import stream = require('stream');
+
 
 
 class LineEmitter extends events.EventEmitter {
@@ -16,6 +19,7 @@ class LineEmitter extends events.EventEmitter {
 			this.compileNewlines(newlines);
 		}
 		if (typeof streamOrString === 'string') {
+			//var s = new stream.Readable();
 			setTimeout(() => {
 				this.onData(streamOrString);
 				this.onEnd();
