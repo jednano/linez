@@ -1,13 +1,13 @@
 ﻿///<reference path='../bower_components/dt-node/node.d.ts'/>
 import fs = require('fs');
 import ILine = require('./ILine');
-import events = require('./events');
+import _events = require('./events');
+import events = require('events');
 import BOM = require('./BOM');
 import stream = require('stream');
 
 
-
-class LineEmitter extends events.EventEmitter {
+class LineEmitter extends _events.EventEmitter {
 
 	private rawLinesPattern = /([^\r\n]*)(\r?\n)?/g;
 	private savedLine: ILine;
@@ -19,14 +19,15 @@ class LineEmitter extends events.EventEmitter {
 			this.compileNewlines(newlines);
 		}
 		if (typeof streamOrString === 'string') {
-			//var s = new stream.Readable();
 			setTimeout(() => {
 				this.onData(streamOrString);
 				this.onEnd();
 			});
-		} else {
+		} else if (streamOrString instanceof events.EventEmitter) {
 			streamOrString.on('data', this.onData.bind(this));
 			streamOrString.on('end', this.onEnd.bind(this));
+		} else {
+			this.emit('error', new Error('LineEmitter requires string or stream as input'));
 		}
 	}
 

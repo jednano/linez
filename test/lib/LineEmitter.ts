@@ -4,6 +4,8 @@ import sinonChai = require('../sinon-chai');
 var expect = sinonChai.expect;
 import ILine = require('../../lib/ILine');
 import LineEmitter = require('../../lib/LineEmitter');
+import events = require('../../lib/events');
+import stream = require('stream');
 
 
 // ReSharper disable WrongExpressionStatement
@@ -89,6 +91,19 @@ describe('LineEmitter', () => {
 			expect(line.newline).to.eq(expectedNewlines.shift());
 		});;
 		emitter.on('end', done);
+	});
+
+	it('allows a single line to span over 2 stream chunks', done => {
+		var ee = new events.EventEmitter();
+		var emitter = new LineEmitter(ee);
+		emitter.on('line', (line: ILine) => {
+			console.log('line:', line);
+			expect(line.text).to.eq('foobar');
+		});
+		emitter.on('end', done);
+		ee.emit('data', 'foo');
+		ee.emit('data', 'bar');
+		ee.emit('end');
 	});
 
 });
