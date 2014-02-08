@@ -89,7 +89,7 @@ describe('LineEmitter', () => {
 		emitter.on('line', (line: ILine) => {
 			expect(line.text).to.eq(expectedTexts.shift());
 			expect(line.newline).to.eq(expectedNewlines.shift());
-		});;
+		});
 		emitter.on('end', done);
 	});
 
@@ -97,7 +97,6 @@ describe('LineEmitter', () => {
 		var ee = new events.EventEmitter();
 		var emitter = new LineEmitter(ee);
 		emitter.on('line', (line: ILine) => {
-			console.log('line:', line);
 			expect(line.text).to.eq('foobar');
 		});
 		emitter.on('end', done);
