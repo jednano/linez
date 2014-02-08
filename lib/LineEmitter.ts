@@ -33,9 +33,7 @@ class LineEmitter extends events.EventEmitter {
 			return;
 		}
 		newlines = newlines.map((sequence: string) => {
-			return sequence.split('').map((c: string) => {
-				return '\\' + c;
-			}).join('');
+			return '\\' + sequence.split('').join('\\');
 		});
 		var nl = '(?:' + newlines.join('|') + ')';
 		return new RegExp('([^' + nl + ']*)(' + nl + ')?', 'g');
