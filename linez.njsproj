@@ -28,6 +28,9 @@
     <Content Include=".npmignore" />
     <Content Include=".travis.yml" />
     <Content Include="lib\boms.ts" />
+    <Content Include="lib\events.ts" />
+    <Content Include="lib\LineEmitter.ts" />
+    <Content Include="lib\ILine.ts" />
     <Content Include="lib\newlines.ts" />
     <Content Include="linez.d.ts" />
     <Content Include="bower.json" />
@@ -40,8 +43,14 @@
     <Content Include="package.json" />
     <Content Include="CHANGELOG.md" />
     <Content Include="README.md" />
+    <Content Include="test\fixtures\sans-eol.txt" />
+    <Content Include="test\fixtures\sans-eol.json" />
+    <Content Include="test\fixtures\with-eol.json" />
+    <Content Include="test\fixtures\with-eol.txt" />
     <Content Include="test\lib\api.ts" />
     <Content Include="test\lib\BOM.ts" />
+    <Content Include="test\lib\events.ts" />
+    <Content Include="test\lib\LineEmitter.ts" />
     <Content Include="test\lib\Newline.ts" />
     <Content Include="test\lib\Line.ts" />
     <Content Include="test\sinon-chai.ts" />
@@ -51,6 +60,7 @@
     <Folder Include="lib\" />
     <Folder Include="test\" />
     <Folder Include="test\lib\" />
+    <Folder Include="test\fixtures\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Gulpfile.js" />

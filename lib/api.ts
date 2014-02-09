@@ -21,6 +21,17 @@ export function parse(text: string): p.Promise {
 	return parsing.promise;
 }
 
+//export function parse(text: string, callback: Function) {
+//	var emitter = new LineEmitter(text);
+//	var lines: ILine[] = [];
+//	emitter.on('line', (line: ILine) => {
+//		lines.push(line);
+//	});
+//	emitter.on('end', () => {
+//		callback(lines);
+//	});
+//}
+
 export function parseSync(text: string): _Line[] {
 	var newline = Newline.pattern.source;
 	var wholeLinesPat = new RegExp('[^(' + newline + ')]*(' + newline + ')?', 'g');
@@ -33,3 +44,33 @@ export function parseSync(text: string): _Line[] {
 	}
 	return lines;
 }
+
+var _newlineFinder = new RegExpNewlineFinder(/(\r?\n)/);
+
+export function configure(newlineFinder: INewlineFinder) {
+	_newlineFinder = newlineFinder;
+}
+
+export function parseFile(filepath: string, encoding: string) {
+	var emitter = new LineEmitter(_newlineFinder);
+
+	var stream = fs.createReadStream('test/fixtures/lines.txt');
+	stream.on('data', (chunk: any) => {
+		emitter.pushLines(chunk.toString());
+	});
+	stream.on('end', () => {
+		emitter.flushLines();
+	});
+	stream.resume(); // causes lines to be emitted;
+
+	return emitter; // problem: lines are emitted before the caller can attach 'line' handlers
+}
+
+export function parseText(text: string) {
+	var emitter = new LineEmitter(_newlineFinder);
+	emitter.pushLines(text);
+	emitter.flushLines();
+	return emitter; // problem: lines are emitted before the caller can attach 'line' handlers
+}
+
+
