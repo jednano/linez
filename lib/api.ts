@@ -44,3 +44,33 @@ export function parseSync(text: string): _Line[] {
 	}
 	return lines;
 }
+
+var _newlineFinder = new RegExpNewlineFinder(/(\r?\n)/);
+
+export function configure(newlineFinder: INewlineFinder) {
+	_newlineFinder = newlineFinder;
+}
+
+export function parseFile(filepath: string, encoding: string) {
+	var emitter = new LineEmitter(_newlineFinder);
+
+	var stream = fs.createReadStream('test/fixtures/lines.txt');
+	stream.on('data', (chunk: any) => {
+		emitter.pushLines(chunk.toString());
+	});
+	stream.on('end', () => {
+		emitter.flushLines();
+	});
+	stream.resume(); // causes lines to be emitted;
+
+	return emitter; // problem: lines are emitted before the caller can attach 'line' handlers
+}
+
+export function parseText(text: string) {
+	var emitter = new LineEmitter(_newlineFinder);
+	emitter.pushLines(text);
+	emitter.flushLines();
+	return emitter; // problem: lines are emitted before the caller can attach 'line' handlers
+}
+
+
