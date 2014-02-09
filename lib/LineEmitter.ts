@@ -1,73 +1,84 @@
 ﻿///<reference path='../bower_components/dt-node/node.d.ts'/>
-import fs = require('fs');
 import ILine = require('./ILine');
 import _events = require('./events');
 import events = require('events');
-import BOM = require('./BOM');
-import stream = require('stream');
 
 
 class LineEmitter extends _events.EventEmitter {
 
-	private rawLinesPattern = /([^\r\n]*)(\r?\n)?/g;
-	private savedLine: ILine;
+	private newlinesPattern: RegExp;
+	private buffer = '';
 	private lineNumber = 0;
+	private offset = 0;
 
 	constructor(streamOrString: any, newlines?: string[]) {
 		super();
-		this.rawLinesPattern = this.createRawLinesPattern(newlines) || this.rawLinesPattern;
+		this.newlinesPattern = this.createNewlinesPattern(newlines || ['\r\n', '\n']);
 		if (typeof streamOrString === 'string') {
 			setTimeout(() => {
-				this.onData(streamOrString);
-				this.onEnd();
+				this.pushLines(streamOrString);
+				this.flushLines();
 			});
 		} else if (streamOrString instanceof events.EventEmitter) {
-			streamOrString.on('data', this.onData.bind(this));
-			streamOrString.on('end', this.onEnd.bind(this));
+			streamOrString.on('data', (chunk: any) => {
+				var s = chunk.toString();
+				this.pushLines(s);
+			});
+			streamOrString.on('end', this.flushLines.bind(this));
 		} else {
 			this.emit('error', new Error('LineEmitter requires string or stream as input'));
 		}
 	}
 
-	private createRawLinesPattern(newlines: string[]) {
-		if (!newlines) {
-			return;
-		}
+	private createNewlinesPattern(newlines: string[]) {
 		newlines = newlines.map((sequence: string) => {
 			return '\\' + sequence.split('').join('\\');
 		});
-		var nl = '(?:' + newlines.join('|') + ')';
-		return new RegExp('([^' + nl + ']*)(' + nl + ')?', 'g');
+		return new RegExp('(' + newlines.join('|') + ')', 'g');
 	}
 
-	private onData(chunk: any) {
-		chunk.toString().replace(this.rawLinesPattern, (match, text, newline, offset) => {
-			var line: ILine = {
-				number: ++this.lineNumber,
-				text: text,
-				offset: offset
-			};
-			if (newline) {
-				line.newline = newline;
-			}
-			this.onLine(line);
+	private pushLines(lines: string) {
+		this.buffer += lines;
+		this.newlinesPattern.lastIndex = 0;
+		var offset = 0;
+		this.findAllMatches(this.buffer, this.newlinesPattern).forEach((match) => {
+			var text = this.buffer.substring(offset, match.index);
+			var newline = match[0];
+			this.emitLine(this.createLine(text, newline));
+			offset += text.length + newline.length;
 		});
+		this.buffer = this.buffer.substr(offset);
 	}
 
-	private onLine(line: ILine) {
-		if (line.text === '' && !line.newline) {
-			return;
+	private findAllMatches(s: string, re: RegExp) {
+		var results = [];
+		var result;
+		while(result = re.exec(s)) {
+			results.push(result);
 		}
-		if (!line.newline) {
-			this.savedLine = line;
-			return;
+		return results;
+	}
+
+	private createLine(text: string, newline?: string) {
+		var line: ILine = {
+			number: ++this.lineNumber,
+			text: text,
+			offset: this.offset
+		};
+		if (newline) {
+			line.newline = newline;
 		}
+		this.offset += text.length + (newline || '').length;
+		return line;
+	}
+
+	private emitLine(line: ILine) {
 		this.emit('line', line);
 	}
 
-	private onEnd() {
-		if (this.savedLine) {
-			this.emit('line', this.savedLine);
+	private flushLines() {
+		if (this.buffer) {
+			this.emitLine(this.createLine(this.buffer));
 		}
 		this.emit('end');
 	}
