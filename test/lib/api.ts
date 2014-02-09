@@ -5,46 +5,50 @@ import Line = require('../../lib/Line');
 import newlines = require('../../lib/newlines');
 import Newline = require('../../lib/Newline');
 import charsets = require('../../lib/charsets');
+import ILine = require('../../lib/ILine');
+import fs = require('fs');
 
 
 // ReSharper disable WrongExpressionStatement
 describe('linez', () => {
 
-	it('parse method parses text asynchronously', done => {
-		linez.parse('foo').done((lines: Line[]) => {
-			expect(lines).to.have.lengthOf(1);
-			expect(lines[0].text).to.equal('foo');
+	it('parseFile method parses files', done => {
+		var lines: ILine[] = [];
+		linez.configure({ encoding: 'utf8' });
+		var emitter = linez.parseFile('test/fixtures/lines.txt');
+		emitter.on('line', (err: Error, line: ILine) => {
+			lines.push(line);
+		});
+		emitter.on('end', () => {
+			var expectedLines = getJSON('test/fixtures/lines.json');
+			expect(lines).to.deep.equal(expectedLines);
 			done();
 		});
 	});
 
-	it('parseSync method parses text synchronously', () => {
-		var lines = linez.parseSync('foo');
-		expect(lines).to.have.lengthOf(1);
-		expect(lines[0].text).to.equal('foo');
-	});
-
-	it('parses lines with BOM signature', done => {
-		linez.parse('\u00FE\u00FFfoo').done((lines: Line[]) => {
-			expect(lines).to.have.lengthOf(1);
-			var line1 = lines[0];
-			expect(line1.charset).to.equal(charsets.utf_16be);
-			expect(line1.text).to.equal('foo');
-			done();
+	it('parseText method parses text', () => {
+		var lines: ILine[] = [];
+		linez.parseText('foo\nbar', (err: Error, line: ILine) => {
+			lines.push(line);
 		});
-	});
-
-	it('parses lines with newline characters', done => {
-		linez.parse('foo\r\nbar\n').done((lines: Line[]) => {
-			expect(lines).to.have.lengthOf(2);
-			var line1 = lines[0];
-			expect(line1.text).to.equal('foo');
-			expect(line1.newline.character).to.equal(newlines.crlf);
-			var line2 = lines[1];
-			expect(line2.text).to.eq('bar');
-			expect(line2.newline.character).to.eq(newlines.lf);
-			done();
-		});
+		expect(lines).to.deep.equal([
+			{
+				number: 1,
+				text: 'foo',
+				newline: '\n',
+				offset: 0
+			},
+			{
+				number: 2,
+				text: 'bar',
+				newline: '',
+				offset: 4
+			}
+		]);
 	});
 
 });
+
+function getJSON(path) {
+	return JSON.parse(fs.readFileSync(path).toString());
+}

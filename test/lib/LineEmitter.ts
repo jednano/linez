@@ -14,13 +14,17 @@ describe('LineEmitter', () => {
 
 	it('supports a stream as input', done => {
 		var lines = [];
-		var emitter = new LineEmitter(new RegExpNewlineFinder(/(\r?\n)/g), (err: Error, line: ILine) => {
-			lines.push(line);
-		});
+		var emitter = new LineEmitter(
+			new RegExpNewlineFinder(/(\r?\n)/g),
+			(err: Error, line: ILine) => {
+				lines.push(line);
+			});
 
-		var stream = fs.createReadStream('test/fixtures/lines.txt');
-		stream.on('data', (chunk: any) => {
-			emitter.pushLines(chunk.toString());
+		var stream = fs.createReadStream('test/fixtures/lines.txt', {
+			encoding: 'utf8'
+		});
+		stream.on('data', (chunk: string) => {
+			emitter.pushLines(chunk);
 		});
 		stream.on('end', () => {
 			emitter.flushLines();
@@ -34,13 +38,15 @@ describe('LineEmitter', () => {
 	var lines = [];
 
 	before(() => {
-		var emitter = new LineEmitter(new RegExpNewlineFinder(/(\r?\n)/g), (err: Error, line: ILine) => {
-			lines.push(line);
-		});
+		var emitter = new LineEmitter(
+			new RegExpNewlineFinder(/(\r?\n)/g),
+			(err: Error, line: ILine) => {
+				lines.push(line);
+			});
 		emitter.pushLines('fo');
 		emitter.pushLines('o\n');
 		emitter.pushLines('bar\r');
-		emitter.pushLines('\nba')
+		emitter.pushLines('\nba');
 		emitter.pushLines('z');
 		emitter.flushLines();
 	});

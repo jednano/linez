@@ -1,7 +1,7 @@
 ﻿interface ILine {
 	number: number;
 	text: string;
-	newline?: string;
+	newline: string;
 	offset: number;
 }
 

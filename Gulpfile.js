@@ -34,11 +34,7 @@ gulp.task('clean', function() {
 		.pipe(clean());
 });
 
-gulp.task('test:pre', function(cb) {
-	runSequence('clean', 'typescript', cb);
-});
-
-gulp.task('test', ['test:pre'], function() {
+gulp.task('test', function() {
 	gulp.src(['test/**/*.js'], { read: false })
 		.pipe(mocha({ reporter: 'spec' }))
 		.on('error', function(err) {

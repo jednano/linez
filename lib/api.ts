@@ -1,46 +1,64 @@
 ﻿﻿///<reference path="../bower_components/dt-node/node.d.ts" />
-///<reference path="../node_modules/promise-ts/promise-ts.d.ts" />
 require('typescript-require');
-import _Line = require('./Line');
-import p = require('promise-ts');
-var Deferred = p.Deferred;
+import LineEmitter = require('./LineEmitter');
+import RegExpNewlineFinder = require('./RegExpNewlineFinder');
+import IConfigureOptions = require('./IConfigureOptions');
+import IParseFileOptions = require('./IParseFileOptions');
+import ILineCallback = require('./ILineCallback');
+import ILine = require('./ILine');
+import util = require('util');
+import fs = require('fs');
+import events = require('events');
+var EventEmitter = events.EventEmitter;
 
 
-export var boms = require('./boms');
-export var BOM = require('./BOM');
-export var charsets = require('./charsets');
-export var Line = _Line;
-export var newlines = require('./newlines');
-export var Newline = require('./Newline');
+var configuration: IConfigureOptions = {
+	encoding: 'utf8',
+	newlinesExpression: /\r?\n/g
+};
 
-export function parse(text: string): p.Promise {
-	var parsing = new Deferred();
-	setTimeout(() => {
-		parsing.resolve(parseSync(text));
-	});
-	return parsing.promise;
+export function configure(options: IConfigureOptions) {
+	extendConfiguration(options);
 }
 
-//export function parse(text: string, callback: Function) {
-//	var emitter = new LineEmitter(text);
-//	var lines: ILine[] = [];
-//	emitter.on('line', (line: ILine) => {
-//		lines.push(line);
-//	});
-//	emitter.on('end', () => {
-//		callback(lines);
-//	});
-//}
+export function parseFile(path: string, options?: IParseFileOptions): EventEmitter {
 
-export function parseSync(text: string): _Line[] {
-	var newline = Newline.pattern.source;
-	var wholeLinesPat = new RegExp('[^(' + newline + ')]*(' + newline + ')?', 'g');
-	var rawLines = text.match(wholeLinesPat) || [];
-	var lines: _Line[] = [];
-	for (var i = 0, rawLine: string; rawLine = rawLines.shift();) {
-		var line = new Line(rawLine);
-		line.number = ++i;
-		lines.push(line);
+	if (options) {
+		extendConfiguration(options);
 	}
-	return lines;
+
+	var ee = new EventEmitter();
+	var lineEmitter = new LineEmitter(
+		new RegExpNewlineFinder(configuration.newlinesExpression),
+		(err: Error, line: ILine) => {
+			ee.emit('line', err, line);
+		});
+	var stream = fs.createReadStream(path, {
+		encoding: configuration.encoding
+	});
+
+	stream.on('data', (chunk: string) => {
+		lineEmitter.pushLines(chunk);
+	});
+	stream.on('end', () => {
+		lineEmitter.flushLines();
+		ee.emit('end');
+	});
+	stream.resume();
+
+	return ee;
+}
+
+export function parseText(text: string, callback: ILineCallback) {
+	var emitter = new LineEmitter(
+		new RegExpNewlineFinder(configuration.newlinesExpression),
+		(err: Error, line: ILine) => {
+			callback(err, line);
+		});
+	emitter.pushLines(text);
+	emitter.flushLines();
+}
+
+function extendConfiguration(options: IConfigureOptions) {
+	(<any>util)._extend(configuration, options);
 }

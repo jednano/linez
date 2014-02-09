@@ -29,9 +29,17 @@
     <Content Include=".travis.yml" />
     <Content Include="lib\boms.ts" />
     <Content Include="lib\events.ts" />
+    <Content Include="lib\IConfigureOptions.ts" />
+    <Content Include="lib\ILineCallback.ts" />
+    <Content Include="lib\INewlineFinder.ts" />
+    <Content Include="lib\INewlineFinderResult.ts" />
+    <Content Include="lib\IParseFile.ts" />
+    <Content Include="lib\IParseFileOptions.ts" />
     <Content Include="lib\LineEmitter.ts" />
     <Content Include="lib\ILine.ts" />
     <Content Include="lib\newlines.ts" />
+    <Content Include="lib\RegExpNewlineFinder.ts" />
+    <Content Include="lib\StringArrayNewlineFinder.ts" />
     <Content Include="linez.d.ts" />
     <Content Include="bower.json" />
     <Content Include="lib\BOM.ts" />
@@ -51,6 +59,8 @@
     <Content Include="test\lib\LineEmitter.ts" />
     <Content Include="test\lib\Newline.ts" />
     <Content Include="test\lib\Line.ts" />
+    <Content Include="test\lib\RegExpNewlineFinder.ts" />
+    <Content Include="test\lib\StringArrayNewlineFinder.ts" />
     <Content Include="test\sinon-chai.ts" />
     <Content Include="tslint.json" />
   </ItemGroup>
