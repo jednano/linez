@@ -31,19 +31,12 @@ describe('LineEmitter', () => {
 		stream.resume();
 	});
 
-	it('emits the correct ILine data for each line', () => {
+	var lines = [];
+
+	before(() => {
 		var emitter = new LineEmitter(new RegExpNewlineFinder(/(\r?\n)/g));
-		var expectedLineNumbers = [1, 2, 3];
-		var expectedOffsets = [0, 4, 9];
-		var expectedTexts = ['foo', 'bar', 'baz'];
-		var expectedNewlines = ['\n', '\r\n'];
-		var lines = [];
 		emitter.on('line', (line: ILine) => {
 			lines.push(line);
-			expect(line.number).to.eq(expectedLineNumbers.shift());
-			expect(line.offset).to.eq(expectedOffsets.shift());
-			expect(line.text).to.eq(expectedTexts.shift());
-			expect(line.newline).to.eq(expectedNewlines.shift());
 		});
 		emitter.pushLines('fo');
 		emitter.pushLines('o\n');
@@ -51,8 +44,42 @@ describe('LineEmitter', () => {
 		emitter.pushLines('\nba')
 		emitter.pushLines('z');
 		emitter.flushLines();
+	});
+
+	it('emits correct number of lines', () => {
 		expect(lines.length).to.eq(3);
 	});
+
+	it('emits the correct line number for each line', () => {
+		var expected = [1, 2, 3];
+		var actual = getPropertiesFromLines('number');
+		expect(actual).to.eql(expected);
+	});
+
+	it('emits the correct offset for each line', () => {
+		var expected = [0, 4, 9];
+		var actual = getPropertiesFromLines('offset');
+		expect(actual).to.eql(expected);
+	});
+
+	it('emits the correct text for each line', () => {
+		var expected = ['foo', 'bar', 'baz'];
+		var actual = getPropertiesFromLines('text');
+		expect(actual).to.eql(expected);
+	});
+
+	it('emits the correct newline for each line', () => {
+		var expected = ['\n', '\r\n', undefined];
+		var actual = getPropertiesFromLines('newline');
+		console.log(actual[2]);
+		expect(actual).to.eql(expected);
+	});
+
+	function getPropertiesFromLines(propertyName: string) {
+		return lines.map((line: ILine) => {
+			return line[propertyName];
+		});
+	}
 
 });
 
