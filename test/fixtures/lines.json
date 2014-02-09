@@ -14,6 +14,7 @@
 	{
 		"number": 3,
 		"text": "baz",
+		"newline": "",
 		"offset": 8
 	}
 ]

@@ -6,6 +6,7 @@ import ILine = require('../../lib/ILine');
 import LineEmitter = require('../../lib/LineEmitter');
 import stream = require('stream');
 import RegExpNewlineFinder = require('../../lib/RegExpNewlineFinder');
+import ILineCallback = require('../../lib/ILineCallback');
 
 
 // ReSharper disable WrongExpressionStatement
@@ -13,8 +14,7 @@ describe('LineEmitter', () => {
 
 	it('supports a stream as input', done => {
 		var lines = [];
-		var emitter = new LineEmitter(new RegExpNewlineFinder(/(\r?\n)/g));
-		emitter.on('line', (line: ILine) => {
+		var emitter = new LineEmitter(new RegExpNewlineFinder(/(\r?\n)/g), (err: Error, line: ILine) => {
 			lines.push(line);
 		});
 
@@ -34,8 +34,7 @@ describe('LineEmitter', () => {
 	var lines = [];
 
 	before(() => {
-		var emitter = new LineEmitter(new RegExpNewlineFinder(/(\r?\n)/g));
-		emitter.on('line', (line: ILine) => {
+		var emitter = new LineEmitter(new RegExpNewlineFinder(/(\r?\n)/g), (err: Error, line: ILine) => {
 			lines.push(line);
 		});
 		emitter.pushLines('fo');
@@ -69,7 +68,7 @@ describe('LineEmitter', () => {
 	});
 
 	it('emits the correct newline for each line', () => {
-		var expected = ['\n', '\r\n', undefined];
+		var expected = ['\n', '\r\n', ''];
 		var actual = getPropertiesFromLines('newline');
 		console.log(actual[2]);
 		expect(actual).to.eql(expected);
