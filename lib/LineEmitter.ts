@@ -1,7 +1,6 @@
 ﻿///<reference path='../bower_components/dt-node/node.d.ts'/>
 import ILine = require('./ILine');
 import _events = require('./events');
-import events = require('events');
 
 
 class LineEmitter extends _events.EventEmitter {
@@ -11,23 +10,9 @@ class LineEmitter extends _events.EventEmitter {
 	private lineNumber = 0;
 	private offset = 0;
 
-	constructor(streamOrString: any, newlines?: string[]) {
+	constructor(newlines?: string[]) {
 		super();
 		this.newlinesPattern = this.createNewlinesPattern(newlines || ['\r\n', '\n']);
-		if (typeof streamOrString === 'string') {
-			setTimeout(() => {
-				this.pushLines(streamOrString);
-				this.flushLines();
-			});
-		} else if (streamOrString instanceof events.EventEmitter) {
-			streamOrString.on('data', (chunk: any) => {
-				var s = chunk.toString();
-				this.pushLines(s);
-			});
-			streamOrString.on('end', this.flushLines.bind(this));
-		} else {
-			this.emit('error', new Error('LineEmitter requires string or stream as input'));
-		}
 	}
 
 	private createNewlinesPattern(newlines: string[]) {
@@ -37,7 +22,7 @@ class LineEmitter extends _events.EventEmitter {
 		return new RegExp('(' + newlines.join('|') + ')', 'g');
 	}
 
-	private pushLines(lines: string) {
+	public pushLines(lines: string) {
 		this.buffer += lines;
 		this.newlinesPattern.lastIndex = 0;
 		var offset = 0;
@@ -76,11 +61,10 @@ class LineEmitter extends _events.EventEmitter {
 		this.emit('line', line);
 	}
 
-	private flushLines() {
+	public flushLines() {
 		if (this.buffer) {
 			this.emitLine(this.createLine(this.buffer));
 		}
-		this.emit('end');
 	}
 }
 
