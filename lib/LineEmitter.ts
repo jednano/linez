@@ -15,9 +15,7 @@ class LineEmitter extends _events.EventEmitter {
 
 	constructor(streamOrString: any, newlines?: string[]) {
 		super();
-		if (newlines) {
-			this.compileNewlines(newlines);
-		}
+		this.rawLinesPattern = this.createRawLinesPattern(newlines) || this.rawLinesPattern;
 		if (typeof streamOrString === 'string') {
 			setTimeout(() => {
 				this.onData(streamOrString);
@@ -31,14 +29,15 @@ class LineEmitter extends _events.EventEmitter {
 		}
 	}
 
-	private compileNewlines(newlines: string[]) {
+	private createRawLinesPattern(newlines: string[]) {
+		if (!newlines) {
+			return;
+		}
 		newlines = newlines.map((sequence: string) => {
-			return sequence.split('').map((c: string) => {
-				return '\\' + c;
-			}).join('');
+			return '\\' + sequence.split('').join('\\');
 		});
 		var nl = '(?:' + newlines.join('|') + ')';
-		this.rawLinesPattern = new RegExp('([^' + nl + ']*)(' + nl + ')?', 'g');
+		return new RegExp('([^' + nl + ']*)(' + nl + ')?', 'g');
 	}
 
 	private onData(chunk: any) {
