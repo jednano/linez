@@ -4,8 +4,8 @@ import sinonChai = require('../sinon-chai');
 var expect = sinonChai.expect;
 import ILine = require('../../lib/ILine');
 import LineEmitter = require('../../lib/LineEmitter');
-import events = require('../../lib/events');
 import stream = require('stream');
+import RegExpNewlineFinder = require('../../lib/RegExpNewlineFinder');
 
 
 // ReSharper disable WrongExpressionStatement
@@ -13,7 +13,7 @@ describe('LineEmitter', () => {
 
 	it('supports a stream as input', done => {
 		var lines = [];
-		var emitter = new LineEmitter();
+		var emitter = new LineEmitter(new RegExpNewlineFinder(/(\r?\n)/g));
 		emitter.on('line', (line: ILine) => {
 			lines.push(line);
 		});
@@ -31,84 +31,27 @@ describe('LineEmitter', () => {
 		stream.resume();
 	});
 
-	it('supports a string as input', () => {
-		var emitter = new LineEmitter();
-		var fn = sinon.spy();
-		emitter.on('line', fn);
-		emitter.pushLines('foo');
-		emitter.flushLines();
-		expect(fn).to.have.been.calledOnce;
-	});
-
-	it('emits correct number of lines', () => {
-		var emitter = new LineEmitter();
-		var fn = sinon.spy();
-		emitter.on('line', fn);
-		emitter.pushLines('foo\nbar\r\nbaz\n');
-		emitter.flushLines();
-		expect(fn).to.have.been.calledThrice;
-	});
-
-	it('emits the correct line number for each line', () => {
-		var emitter = new LineEmitter();
+	it('emits the correct ILine data for each line', () => {
+		var emitter = new LineEmitter(new RegExpNewlineFinder(/(\r?\n)/g));
 		var expectedLineNumbers = [1, 2, 3];
-		emitter.on('line', (line: ILine) => {
-			expect(line.number).to.eq(expectedLineNumbers.shift());
-		});
-		emitter.pushLines('foo\nbar\nbaz');
-		emitter.flushLines();
-	});
-
-	it('emits the correct offset for each line', () => {
-		var emitter = new LineEmitter();
-		var expectedOffsets = [0, 4, 8];
-		emitter.on('line', (line: ILine) => {
-			expect(line.offset).to.eq(expectedOffsets.shift());
-		});
-		emitter.pushLines('foo\nbar\nbaz');
-		emitter.flushLines();
-	});
-
-	it('emits the correct text for each line', () => {
-		var emitter = new LineEmitter();
+		var expectedOffsets = [0, 4, 9];
 		var expectedTexts = ['foo', 'bar', 'baz'];
-		emitter.on('line', (line: ILine) => {
-			expect(line.text).to.eq(expectedTexts.shift());
-		});
-		emitter.pushLines('foo\nbar\nbaz');
-		emitter.flushLines();
-	});
-
-	it('emits the correct newline for each line', () => {
-		var emitter = new LineEmitter();
 		var expectedNewlines = ['\n', '\r\n'];
+		var lines = [];
 		emitter.on('line', (line: ILine) => {
-			expect(line.newline).to.eq(expectedNewlines.shift());
-		});
-		emitter.pushLines('foo\nbar\r\nbaz');
-		emitter.flushLines();
-	});
-
-	it('supports custom newline sequences', () => {
-		var emitter = new LineEmitter(['*+', '{.', '|', '\t']);
-		var expectedTexts = ['foo\n', 'bar\r\n', 'baz', 'qux'];
-		var expectedNewlines = ['\t', '|', '{.', '*+'];
-		emitter.on('line', (line: ILine) => {
+			lines.push(line);
+			expect(line.number).to.eq(expectedLineNumbers.shift());
+			expect(line.offset).to.eq(expectedOffsets.shift());
 			expect(line.text).to.eq(expectedTexts.shift());
 			expect(line.newline).to.eq(expectedNewlines.shift());
 		});
-		emitter.pushLines('foo\n\tbar\r\n|baz{.qux*+');
+		emitter.pushLines('fo');
+		emitter.pushLines('o\n');
+		emitter.pushLines('bar\r');
+		emitter.pushLines('\nba')
+		emitter.pushLines('z');
 		emitter.flushLines();
-	});
-
-	it('allows a single line to span over 2 stream chunks', () => {
-		var emitter = new LineEmitter();
-		emitter.on('line', (line: ILine) => {
-			expect(line.text).to.eq('foobar');
-		});
-		emitter.pushLines('foo');
-		emitter.pushLines('bar');
-		emitter.flushLines();
+		expect(lines.length).to.eq(3);
 	});
 
 });
