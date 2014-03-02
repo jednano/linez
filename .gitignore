@@ -8,7 +8,7 @@ lib-cov
 *.gz
 *.suo
 *.js
-!Gulpfile.js
+!Gruntfile.js
 !lib/api.js
 
 pids
