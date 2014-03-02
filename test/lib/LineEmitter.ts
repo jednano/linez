@@ -5,7 +5,7 @@ var expect = sinonChai.expect;
 import ILine = require('../../lib/interfaces/ILine');
 import LineEmitter = require('../../lib/LineEmitter');
 import stream = require('stream');
-import RegExpNewlineFinder = require('../../lib/RegExpNewlineFinder');
+import NewlineFinder = require('../../lib/NewlineFinder');
 import ILineCallback = require('../../lib/interfaces/ILineCallback');
 
 
@@ -15,7 +15,7 @@ describe('LineEmitter', () => {
 	it('supports a stream as input', done => {
 		var lines = [];
 		var emitter = new LineEmitter(
-			new RegExpNewlineFinder(/(\r?\n)/g),
+			new NewlineFinder(/(\r?\n)/g),
 			(err: Error, line: ILine) => {
 				lines.push(line);
 			});
@@ -39,7 +39,7 @@ describe('LineEmitter', () => {
 
 	before(() => {
 		var emitter = new LineEmitter(
-			new RegExpNewlineFinder(/(\r?\n)/g),
+			new NewlineFinder(/(\r?\n)/g),
 			(err: Error, line: ILine) => {
 				lines.push(line);
 			});

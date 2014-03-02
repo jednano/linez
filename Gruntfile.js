@@ -4,11 +4,13 @@
 
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
-		clean: [
-			'lib/**/*.js',
-			'!lib/api.js',
-			'test/**/*.js'
-		],
+		clean: {
+			files: [
+				'lib/**/*.js',
+				'!lib/api.js',
+				'test/**/*.js'
+			]
+		},
 		typescript: {
 			options: {
 				module: 'commonjs',

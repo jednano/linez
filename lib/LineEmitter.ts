@@ -1,37 +1,16 @@
-﻿///<reference path='../bower_components/dt-node/node.d.ts'/>
+﻿import DocumentLines = require('./DocumentLines');
 import ILine = require('interfaces/ILine');
-import INewlineFinder = require('interfaces/INewlineFinder');
 import ILineCallback = require('interfaces/ILineCallback');
+import NewlineFinder = require('./NewlineFinder');
 
-class DocumentLines {
-
-	private lineNumber = 1;
-	private offset = 0;
-
-	public createLine(text: string, newline: string) {
-		var line: ILine = {
-			number: this.lineNumber,
-			text: text,
-			newline: newline,
-			offset: this.offset
-		};
-		this.lineNumber++;
-		this.offset += text.length + newline.length;
-		return line;
-	}
-
-}
 
 class LineEmitter {
 
-	private newlineFinder: INewlineFinder;
-	private callback: ILineCallback;
 	private documentLines = new DocumentLines();
 	private buffer = '';
 
-	constructor(newlineFinder: INewlineFinder, callback: ILineCallback) {
-		this.newlineFinder = newlineFinder;
-		this.callback = callback;
+	constructor(private newlineFinder: NewlineFinder, private callback: ILineCallback) {
+		return;
 	}
 
 	public pushLines(lines: string) {

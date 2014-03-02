@@ -1,6 +1,5 @@
 ﻿import sinonChai = require('../sinon-chai');
 var expect = sinonChai.expect;
-import linez = require('../../lib/api');
 import charsets = require('../../lib/charsets');
 import boms = require('../../lib/boms');
 import BOM = require('../../lib/BOM');

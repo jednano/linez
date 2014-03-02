@@ -1,5 +1,4 @@
-﻿///<reference path='../bower_components/dt-node/node.d.ts'/>
-import ILineCallback = require('./ILineCallback');
+﻿import ILineCallback = require('./ILineCallback');
 import IParseFileOptions = require('./IParseFileOptions');
 
 

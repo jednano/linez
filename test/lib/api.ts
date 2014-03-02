@@ -1,7 +1,7 @@
 ﻿import sinonChai = require('../sinon-chai');
 var expect = sinonChai.expect;
-import linez = require('../../lib/api');
 import Line = require('../../lib/Line');
+import Linez = require('../../lib/Linez');
 import newlines = require('../../lib/newlines');
 import Newline = require('../../lib/Newline');
 import charsets = require('../../lib/charsets');
@@ -12,9 +12,14 @@ import fs = require('fs');
 // ReSharper disable WrongExpressionStatement
 describe('linez', () => {
 
+	var linez: Linez;
+	before(() => {
+		linez = new Linez();
+	});
+
 	it('parseFile method parses files', done => {
 		var lines: ILine[] = [];
-		linez.configure({ encoding: 'utf8' });
+		linez.extendConfiguration({ encoding: 'utf8' });
 		var emitter = linez.parseFile('test/fixtures/lines.txt');
 		emitter.on('line', (err: Error, line: ILine) => {
 			lines.push(line);

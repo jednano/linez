@@ -1,6 +1,5 @@
 ﻿import sinonChai = require('../sinon-chai');
 var expect = sinonChai.expect;
-import linez = require('../../lib/api');
 import Newline = require('../../lib/Newline');
 
 
