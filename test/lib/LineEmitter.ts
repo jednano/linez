@@ -2,11 +2,11 @@
 import sinon = require('sinon');
 import sinonChai = require('../sinon-chai');
 var expect = sinonChai.expect;
-import ILine = require('../../lib/ILine');
+import ILine = require('../../lib/interfaces/ILine');
 import LineEmitter = require('../../lib/LineEmitter');
 import stream = require('stream');
 import RegExpNewlineFinder = require('../../lib/RegExpNewlineFinder');
-import ILineCallback = require('../../lib/ILineCallback');
+import ILineCallback = require('../../lib/interfaces/ILineCallback');
 
 
 // ReSharper disable WrongExpressionStatement

@@ -1,4 +1,4 @@
-///<reference path='../bower_components/dt-node/node.d.ts'/>
+///<reference path='../../bower_components/dt-node/node.d.ts'/>
 import INewlineFinderResult = require('./INewlineFinderResult');
 
 interface INewlineFinder {

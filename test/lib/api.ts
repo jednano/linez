@@ -5,7 +5,7 @@ import Line = require('../../lib/Line');
 import newlines = require('../../lib/newlines');
 import Newline = require('../../lib/Newline');
 import charsets = require('../../lib/charsets');
-import ILine = require('../../lib/ILine');
+import ILine = require('../../lib/interfaces/ILine');
 import fs = require('fs');
 
 

@@ -1,6 +1,6 @@
 ///<reference path='../bower_components/dt-node/node.d.ts'/>
-import INewlineFinder = require('./INewlineFinder');
-import INewlineFinderResult = require('./INewlineFinderResult');
+import INewlineFinder = require('interfaces/INewlineFinder');
+import INewlineFinderResult = require('interfaces/INewlineFinderResult');
 
 class RegExpNewlineFinder implements INewlineFinder {
     private re: RegExp;

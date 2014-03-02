@@ -49,7 +49,7 @@
 	require('load-grunt-tasks')(grunt);
 
 	// Default task(s).
-	grunt.registerTask('default', ['build', 'mochaTest', 'watch']);
+	grunt.registerTask('default', ['build', 'watch']);
 	grunt.registerTask('test', ['build', 'mochaTest', 'clean']);
 	grunt.registerTask('build', ['clean', 'typescript']);
 

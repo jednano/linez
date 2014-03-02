@@ -1,7 +1,7 @@
 ﻿///<reference path='../bower_components/dt-node/node.d.ts'/>
-import ILine = require('./ILine');
-import INewlineFinder = require('./INewlineFinder');
-import ILineCallback = require('./ILineCallback');
+import ILine = require('interfaces/ILine');
+import INewlineFinder = require('interfaces/INewlineFinder');
+import ILineCallback = require('interfaces/ILineCallback');
 
 class DocumentLines {
 

@@ -2,10 +2,10 @@
 require('typescript-require');
 import LineEmitter = require('./LineEmitter');
 import RegExpNewlineFinder = require('./RegExpNewlineFinder');
-import IConfigureOptions = require('./IConfigureOptions');
-import IParseFileOptions = require('./IParseFileOptions');
-import ILineCallback = require('./ILineCallback');
-import ILine = require('./ILine');
+import IConfigureOptions = require('interfaces/IConfigureOptions');
+import IParseFileOptions = require('interfaces/IParseFileOptions');
+import ILineCallback = require('interfaces/ILineCallback');
+import ILine = require('interfaces/ILine');
 import util = require('util');
 import fs = require('fs');
 import events = require('events');
