@@ -1,7 +1,7 @@
 language: node_js
 
 node_js:
-  - "0.10.18"
+  - "0.10"
 
 notifications:
   email:
@@ -9,4 +9,5 @@ notifications:
     on_failure: always
 
 before_script:
-  - ./node_modules/.bin/bower install
+  - npm install -g bower
+  - bower install

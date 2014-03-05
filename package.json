@@ -23,27 +23,21 @@
   "bugs": {
     "url": "https://github.com/jedmao/linez/issues"
   },
-  "engines": {
-    "node": ">=0.10.18 <0.12"
-  },
   "license": "MIT",
   "dependencies": {
-    "typescript-require": "~0.2.4",
-    "promise-ts": "~0.2.2"
+    "typescript-require": "~0.2.4"
   },
   "devDependencies": {
-    "bower": "~1.2.8",
     "chai": "~1.8.1",
-    "load-grunt-tasks": "~0.4.0",
     "grunt": "~0.4.2",
     "grunt-contrib-clean": "~0.5.0",
     "grunt-contrib-watch": "~0.5.3",
     "grunt-mocha-test": "~0.9.4",
     "grunt-typescript-compile": "~0.2.0",
+    "load-grunt-tasks": "~0.4.0",
     "mocha": "~1.16.2",
     "sinon": "~1.7.3",
     "sinon-chai": "~2.4.0",
-    "time-grunt": "~0.2.10",
-    "typescript-require": "~0.2.6"
+    "time-grunt": "~0.2.10"
   }
 }
