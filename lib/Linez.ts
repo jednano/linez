@@ -3,16 +3,16 @@
 
 class Linez {
 
-	private newline = /\r?\n/g;
+	private newlines = /\r?\n/g;
 
-	public parse(text: string, newline?: RegExp) {
+	public parse(text: string, newlines?: RegExp) {
 		var lines: ILine[] = [];
 		var lineNumber = 0;
 		var lineOffset = 0;
-		text.replace(newline || this.newline, (match, offset) => {
+		text.replace(newlines || this.newlines, (match, offset) => {
 			lines.push({
 				number: ++lineNumber,
-				offset: offset,
+				offset: lineOffset,
 				text: text.substring(lineOffset, offset),
 				newline: match
 			});
