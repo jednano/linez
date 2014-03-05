@@ -13,7 +13,7 @@
   ],
   "main": "./lib/api.js",
   "scripts": {
-    "test": "gulp test"
+    "test": "grunt test"
   },
   "repository": {
     "type": "git",
