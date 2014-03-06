@@ -1,6 +1,6 @@
 {
   "name": "linez",
-  "version": "0.1.1",
+  "version": "0.1.0",
   "author": "Jed Hunsaker <jed.hunsaker+npm@gmail.com>",
   "description": "Parses lines from text, preserving line numbers, offsets and line endings.",
   "keywords": [
