@@ -2,7 +2,7 @@
   "name": "linez",
   "version": "0.1.1",
   "author": "Jed Hunsaker <jed.hunsaker+npm@gmail.com>",
-  "description": "Parse lines from text, perserving BOM signature and newline characters.",
+  "description": "Parses lines from text, preserving line number, offset and line endings.",
   "keywords": [
     "lines",
     "line",

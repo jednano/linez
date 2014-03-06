@@ -5,7 +5,7 @@
   "authors": [
     "Jed Hunsaker <jed.hunsaker+npm@gmail.com>"
   ],
-  "description": "Parse lines from text.",
+  "description": "Parses lines from text, preserving line number, offset and line endings.",
   "main": "./lib/api.js",
   "keywords": [
     "lines",
