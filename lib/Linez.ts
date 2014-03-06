@@ -19,11 +19,11 @@ class Linez {
 
 	parse(text: string) {
 		var lines: ILine[] = [];
-		var lineNumber = 0;
+		var lineNumber = 1;
 		var lineOffset = 0;
 		text.replace(this._newlinesExpression, (match, offset) => {
 			lines.push({
-				number: ++lineNumber,
+				number: lineNumber++,
 				offset: lineOffset,
 				text: text.substring(lineOffset, offset),
 				ending: match
@@ -33,7 +33,7 @@ class Linez {
 		});
 		if (lineOffset !== text.length || text === '') {
 			lines.push({
-				number: ++lineNumber,
+				number: lineNumber,
 				offset: lineOffset,
 				text: text.substr(lineOffset)
 			});
