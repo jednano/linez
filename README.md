@@ -34,31 +34,19 @@ var linez = require('linez');
 
 # Introduction
 
-By default, linez uses `/\r?\n/g` as the regular expression to detect newline
-character sequences and split lines.
-
-This regular expression is tuned for performance and only covers the most common
-newline types (i.e., `\n` and `\r\n`).
-
-If you have need for more newline character sequences, you can configure linez
-with a convenient `newlines` property.
+By default, linez uses `/\r?\n/g` as the regular expression to detect newline character sequences and split lines. This regular expression is tuned for performance and only covers the most common newline types (i.e., `\n` and `\r\n`). If you have need for more newline character sequences, you can configure linez with a convenient `newlines` property.
 
 ```js
 linez.newlines = ['\n', '\r\n', '\r', '\u000B'];
 ```
 
-Setting this property will automatically create a piped regular expression for you
-and use it in any future `linez.parse()` calls.
-
-You can make up your own newlines if you want. Linez doesn't care one way or the other.
+Setting this property will automatically create a piped regular expression for you and use it in any future `linez.parse()` calls. You can make up your own newlines if you want. Linez doesn't care one way or the other.
 
 ```js
 linez.newlines = ['foo', 'bar'];
 ```
 
-Newlines are just strings. They can be anything.
-There are, however, some known newline character sequences.
-Should you need them, refer to the following table:
+Newlines are just strings. They can be anything. There are, however, some known newline character sequences. Should you need them, refer to the following table:
 
 | String   | Unicode        | Name                        |
 | -------- |:-------------- |:--------------------------- |
@@ -76,8 +64,7 @@ Should you need them, refer to the following table:
 
 ### newlines
 
-Set this property to configure linez to use any number of newline character
-sequences.
+Set this property to configure linez to use any number of newline character sequences.
 
 ```js
 linez.newlines = ['\n', '\r\n', '\r', '\u000B'];
@@ -85,8 +72,7 @@ linez.newlines = ['\n', '\r\n', '\r', '\u000B'];
 
 ### parse(text: string): void
 
-Parses text into lines, each of which is defined by the
-[ILine](https://github.com/jedmao/linez/blob/master/lib/ILine.ts) interface.
+Parses text into lines, each of which is defined by the [ILine](https://github.com/jedmao/linez/blob/master/lib/ILine.ts) interface.
 
 ```ts
 interface ILine {
@@ -97,8 +83,7 @@ interface ILine {
 }
 ```
 
-[The specs](https://github.com/jedmao/linez/blob/master/test/spec/lib/Linez.ts)
-show great usage examples.
+[The specs](https://github.com/jedmao/linez/blob/master/test/spec/lib/Linez.ts) show some great usage examples.
 
 ```ts
 var lines = linez.parse('foo\nbar\nbaz');
