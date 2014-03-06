@@ -46,7 +46,7 @@ Setting this property will automatically create a piped regular expression for y
 linez.newlines = ['foo', 'bar'];
 ```
 
-Newlines are just strings. They can be anything. There are, however, some known newline character sequences. Should you need them, refer to the following table:
+This would be converted into `/(?:foo|bar)`. Newlines are just strings. They can be anything. There are, however, some known newline character sequences. Should you need them, refer to the following table:
 
 | String   | Unicode        | Name                        |
 | -------- |:-------------- |:--------------------------- |
