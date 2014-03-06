@@ -1,19 +1,19 @@
 {
   "name": "linez",
-  "version": "0.1.1",
+  "version": "0.1.0",
   "author": "Jed Hunsaker <jed.hunsaker+npm@gmail.com>",
-  "description": "Parse lines from text, perserving BOM signature and newline characters.",
+  "description": "Parses lines from text, preserving line numbers, offsets and line endings.",
   "keywords": [
     "lines",
     "line",
     "parse",
     "text",
-    "bom",
-    "newline"
+    "newline",
+    "ending"
   ],
   "main": "./lib/api.js",
   "scripts": {
-    "test": "gulp test"
+    "test": "grunt test"
   },
   "repository": {
     "type": "git",
@@ -23,26 +23,21 @@
   "bugs": {
     "url": "https://github.com/jedmao/linez/issues"
   },
-  "engines": {
-    "node": ">=0.10.18 <0.12"
-  },
   "license": "MIT",
   "dependencies": {
-    "typescript-require": "~0.2.4",
-    "promise-ts": "~0.2.2"
+    "typescript-require": "~0.2.4"
   },
   "devDependencies": {
-    "bower": "~1.2.8",
     "chai": "~1.8.1",
-    "gulp": "~3.5.0",
-    "gulp-clean": "~0.2.4",
-    "gulp-mocha": "~0.4.1",
-    "gulp-watch": "~0.5.0",
+    "grunt": "~0.4.2",
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-contrib-watch": "~0.5.3",
+    "grunt-mocha-test": "~0.9.4",
+    "grunt-typescript-compile": "~0.2.0",
+    "load-grunt-tasks": "~0.4.0",
     "mocha": "~1.16.2",
     "sinon": "~1.7.3",
     "sinon-chai": "~2.4.0",
-    "ts-compiler": "~0.1.0",
-    "typescript": "~0.9.5",
-    "run-sequence": "~0.3.2"
+    "time-grunt": "~0.2.10"
   }
 }
