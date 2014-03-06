@@ -1,6 +1,6 @@
 # linez
 
-> Parses lines from text, preserving line number, offset and line endings.
+> Parses lines from text, preserving line numbers, offsets and line endings.
 
 [![Build Status][]](http://travis-ci.org/jedmao/linez)
 [![Dependency Status][]](https://gemnasium.com/jedmao/linez)

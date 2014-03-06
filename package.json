@@ -2,14 +2,14 @@
   "name": "linez",
   "version": "0.1.1",
   "author": "Jed Hunsaker <jed.hunsaker+npm@gmail.com>",
-  "description": "Parses lines from text, preserving line number, offset and line endings.",
+  "description": "Parses lines from text, preserving line numbers, offsets and line endings.",
   "keywords": [
     "lines",
     "line",
     "parse",
     "text",
-    "bom",
-    "newline"
+    "newline",
+    "ending"
   ],
   "main": "./lib/api.js",
   "scripts": {
