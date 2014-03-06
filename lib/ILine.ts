@@ -1,8 +1,8 @@
 ﻿interface ILine {
+	offset: number;
 	number: number;
 	text: string;
-	newline: string;
-	offset: number;
+	ending?: string;
 }
 
 export = ILine;
