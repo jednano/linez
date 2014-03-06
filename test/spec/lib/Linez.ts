@@ -76,13 +76,4 @@ describe('linez', () => {
 		expect(lines[3].ending).to.be.undefined;
 	});
 
-	it('supports a "hidden" custom newlines expression', () => {
-		(<any>linez)._newlinesExpression = /(?:\t|\u0085)/g;
-		var lines = linez.parse('foo\tbar\nbaz\r\nqux');
-		expect(lines[0].text).to.eq('foo');
-		expect(lines[0].ending).to.eq('\t');
-		expect(lines[1].text).to.eq('bar\nbaz\r\nqux');
-		expect(lines[1].ending).to.be.undefined;
-	});
-
 });
