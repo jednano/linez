@@ -4,11 +4,7 @@ import StringFinder = require('./StringFinder');
 
 class Linez {
 
-	private lineEndingFinder: StringFinder;
-
-	constructor() {
-		this.lineEndingFinder = new StringFinder(/\r?\n/g);
-	}
+	private lineEndingFinder = new StringFinder(/\r?\n/g);
 
 	set newlines(newlines: string[]) {
 		this.lineEndingFinder = new StringFinder(newlines);
