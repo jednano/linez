@@ -1,37 +1,33 @@
 ﻿import ILine = require('./ILine');
+import StringFinder = require('./StringFinder');
 
 
 class Linez {
 
-	private _newlinesExpression = /\r?\n/g;
+	private lineEndingFinder: StringFinder;
 
-	public set newlines(newlines: string[]) {
-		this._newlinesExpression = this.convertToPipedExpression(newlines);
+	constructor() {
+		this.lineEndingFinder = new StringFinder(/\r?\n/g);
 	}
 
-	private convertToPipedExpression(newlines: string[]) {
-		newlines = newlines.map(s => {
-			return '\\' + s.split('').join('\\');
-		});
-		var result = new RegExp('(?:' + newlines.join('|') + ')', 'g');
-		return result;
+	set newlines(newlines: string[]) {
+		this.lineEndingFinder = new StringFinder(newlines);
 	}
 
 	parse(text: string) {
 		var lines: ILine[] = [];
 		var lineNumber = 1;
 		var lineOffset = 0;
-		text.replace(this._newlinesExpression, (match, offset) => {
+		this.lineEndingFinder.findAll(text).forEach(lineEnding => {
 			lines.push({
 				number: lineNumber++,
 				offset: lineOffset,
-				text: text.substring(lineOffset, offset),
-				ending: match
+				text: text.substring(lineOffset, lineEnding.index),
+				ending: lineEnding.text
 			});
-			lineOffset = offset + match.length;
-			return match;
+			lineOffset = lineEnding.index + lineEnding.text.length;
 		});
-		if (lineOffset !== text.length || text === '') {
+		if (lineOffset < text.length || text === '') {
 			lines.push({
 				number: lineNumber,
 				offset: lineOffset,
