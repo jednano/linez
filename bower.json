@@ -23,9 +23,11 @@
     "test",
     "tests"
   ],
+  "dependencies": {
+    "dt-node": "*"
+  },
   "devDependencies": {
     "dt-mocha": "~1.9.0",
-    "dt-node": "*",
     "dt-sinon": "~1.5.0",
     "dt-sinon-chai": "~2.4.0"
   }
