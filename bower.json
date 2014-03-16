@@ -1,5 +1,6 @@
 {
   "name": "linez",
+  "private": true,
   "version": "1.0.0-dev",
   "homepage": "https://github.com/jedmao/linez",
   "authors": [

@@ -34,16 +34,20 @@ var linez = require('linez');
 
 # Introduction
 
-By default, linez uses `/\r?\n/g` as the regular expression to detect newline character sequences and split lines. This regular expression is tuned for performance and only covers the most common newline types (i.e., `\n` and `\r\n`). If you have need for more newline character sequences, you can configure linez with a convenient `newlines` property.
+By default, linez uses `/\r?\n/g` as the regular expression to detect newline character sequences and split lines. This regular expression is tuned for performance and only covers the most common newline types (i.e., `\n` and `\r\n`). If you have need for more newline character sequences, you can configure linez with the `configure` method.
 
 ```js
-linez.newlines = ['\n', '\r\n', '\r', '\u000B'];
+linez.configure({
+  newlines: ['\n', '\r\n', '\r', '\u000B']
+});
 ```
 
 Setting this property will automatically create a piped regular expression for you and use it in any future `linez.parse()` calls. You can make up your own newlines if you want. Linez doesn't care one way or the other.
 
 ```js
-linez.newlines = ['foo', 'bar'];
+linez.configure({
+  newlines: ['foo', 'bar']
+});
 ```
 
 This would be converted into `/(?:foo|bar)`. Newlines are just strings. They can be anything. There are, however, some known newline character sequences. Should you need them, refer to the following table:
@@ -62,17 +66,24 @@ This would be converted into `/(?:foo|bar)`. Newlines are just strings. They can
 
 # API
 
-### newlines
+### configure(options: IOptions)
 
-Set this property to configure linez to use any number of newline character sequences.
+Configures linez to use the supplied options. Currently, only the newlines property is available, where you can specify any number of newline character sequences.
 
 ```js
-linez.newlines = ['\n', '\r\n', '\r', '\u000B'];
+linez.configure({
+  newlines = ['\n', '\r\n', '\r', '\u000B']
+});
+```
+### [Document](https://github.com/jedmao/linez/blob/master/lib/Document.ts)
+
+```ts
+constructor(public lines: ILine[]);
 ```
 
-### parse(text: string): void
+Calling the `toString()` method converts the documents lines into a string, discarding information about line numbers and offsets.
 
-Parses text into lines, each of which is defined by the [ILine](https://github.com/jedmao/linez/blob/master/lib/ILine.ts) interface.
+### [ILine](https://github.com/jedmao/linez/blob/master/lib/ILine.ts)
 
 ```ts
 interface ILine {
@@ -83,10 +94,22 @@ interface ILine {
 }
 ```
 
-[The specs](https://github.com/jedmao/linez/blob/master/test/spec/lib/Linez.ts) show some great usage examples.
+### [ILine](https://github.com/jedmao/linez/blob/master/lib/IOptions.ts)
 
 ```ts
-var lines = linez.parse('foo\nbar\nbaz');
+interface IOptions {
+  newlines?: string[];
+}
+```
+
+### parse(text: string): void
+
+Parses text into a `Document`.
+
+[The specs](https://github.com/jedmao/linez/blob/master/test/spec/lib/linez.ts) show some great usage examples.
+
+```ts
+var lines = linez.parse('foo\nbar\nbaz').lines;
 lines[1].offset; // 4
 lines[1].number; // 2
 lines[1].text; // bar
