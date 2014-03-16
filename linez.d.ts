@@ -1,5 +1,4 @@
 ﻿declare module "linez" {
-	import Linez = require('lib/Linez');
-	var linez: Linez;
+	import linez = require('lib/linez');
 	export = linez;
 }

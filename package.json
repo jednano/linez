@@ -1,6 +1,6 @@
 {
   "name": "linez",
-  "version": "1.0.0-dev",
+  "version": "1.0.2",
   "author": "Jed Hunsaker <jed.hunsaker+npm@gmail.com>",
   "description": "Parses lines from text, preserving line numbers, offsets and line endings.",
   "keywords": [
@@ -13,7 +13,7 @@
   ],
   "main": "./lib/api.js",
   "scripts": {
-    "postinstall": "node ./node_modules/bower/bin/bower install --production",
+    "postinstall": "./node_modules/.bin/bower install --production",
     "test": "grunt test"
   },
   "repository": {

@@ -1,6 +1,7 @@
 {
   "name": "linez",
-  "version": "1.0.0-dev",
+  "private": true,
+  "version": "1.0.2",
   "homepage": "https://github.com/jedmao/linez",
   "authors": [
     "Jed Hunsaker <jed.hunsaker+npm@gmail.com>"
