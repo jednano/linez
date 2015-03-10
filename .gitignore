@@ -1,20 +1,7 @@
-lib-cov
-*.seed
-*.log
-*.csv
-*.dat
-*.out
-*.pid
-*.gz
-*.suo
-*.js
-!Gruntfile.js
-!lib/api.js
+# Coverage directory used by tools like istanbul
+coverage
 
-pids
-logs
-results
-
-npm-debug.log
-node_modules/
-bower_components/
+# Dependency directory
+# Deployed apps should consider commenting this line out:
+# see https://npmjs.org/doc/faq.html#Should-I-check-my-node_modules-folder-into-git
+node_modules

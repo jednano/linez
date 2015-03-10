@@ -3,8 +3,10 @@
 
 class Document {
 
-	constructor(public lines: ILine[]) {
-		return;
+	public lines: ILine[];
+
+	constructor(lines?: ILine[]) {
+		this.lines = lines || [];
 	}
 
 	toString() {
