@@ -1,14 +1,20 @@
-import _ILine = require('./ILine');
-import _IOptions = require('./IOptions');
-import _Document = require('./Document');
+declare function linez(text: string): linez.Document;
 declare module linez {
-    class Document extends _Document {
+    class Document {
+        lines: Line[];
+        constructor(lines?: Line[]);
+        toString(): string;
     }
-    interface ILine extends _ILine {
+    interface Line {
+        offset: number;
+        number: number;
+        text: string;
+        ending?: string;
     }
-    interface IOptions extends _IOptions {
+    interface Options {
+        newlines?: string[];
     }
-    function configure(options?: IOptions): void;
-    function parse(text: string): Document;
+    function configure(options?: Options): void;
+    function resetConfiguration(): void;
 }
 export = linez;

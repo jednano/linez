@@ -19,7 +19,7 @@
 
 	private convertToPipedExpression(needles: string[]) {
 		needles = needles.map(needle => {
-			return '\\' + needle.split('').join('\\');
+			return needle.replace('\\', '\\\\');
 		});
 		return new RegExp('(' + needles.join('|') + ')', 'g');
 	}

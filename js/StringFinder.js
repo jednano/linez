@@ -15,15 +15,14 @@ var StringFinder = (function () {
     }
     StringFinder.prototype.convertToPipedExpression = function (needles) {
         needles = needles.map(function (needle) {
-            return '\\' + needle.split('').join('\\');
+            return needle.replace('\\', '\\\\');
         });
         return new RegExp('(' + needles.join('|') + ')', 'g');
     };
     StringFinder.prototype.findAll = function (haystack) {
         var matches = [];
-        var match;
         while (true) {
-            match = this.newlinesRegex.exec(haystack);
+            var match = this.newlinesRegex.exec(haystack);
             if (!match) {
                 break;
             }

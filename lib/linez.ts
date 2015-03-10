@@ -1,52 +1,74 @@
-﻿import _ILine = require('./ILine');
-import _IOptions = require('./IOptions');
-import _Document = require('./Document');
-import StringFinder = require('./StringFinder');
+﻿import StringFinder = require('./StringFinder');
 
-var lineEndingFinder = new StringFinder(/\r?\n/g);
+var lineEndingFinder: StringFinder;
+
+function linez(text: string) {
+	var lines: linez.Line[] = [];
+	var lineNumber = 1;
+	var lineOffset = 0;
+	lineEndingFinder.findAll(text).forEach(lineEnding => {
+		lines.push({
+			number: lineNumber++,
+			offset: lineOffset,
+			text: text.substring(lineOffset, lineEnding.index),
+			ending: lineEnding.text
+		});
+		lineOffset = lineEnding.index + lineEnding.text.length;
+	});
+	if (lineOffset < text.length || text === '') {
+		lines.push({
+			number: lineNumber,
+			offset: lineOffset,
+			text: text.substr(lineOffset)
+		});
+	}
+	return new linez.Document(lines);
+}
 
 // ReSharper disable once InconsistentNaming
 module linez {
 
-	export class Document extends _Document {
+	export class Document {
+		lines: Line[];
+
+		constructor(lines?: Line[]) {
+			this.lines = lines || [];
+		}
+
+		toString() {
+			if (!this.lines) {
+				return '';
+			}
+			return this.lines.map(line => {
+				return line.text + (line.ending || '');
+			}).join('');
+		}
 	}
 
-	export interface ILine extends _ILine {
+	export interface Line {
+		offset: number;
+		number: number;
+		text: string;
+		ending?: string;
 	}
 
-	export interface IOptions extends _IOptions {
+	export interface Options {
+		newlines?: string[];
 	}
 
-	export function configure(options?: IOptions) {
+	export function configure(options?: Options) {
 		options = options || {};
 		if (options.newlines) {
 			lineEndingFinder = new StringFinder(options.newlines);
 		}
 	}
 
-	export function parse(text: string) {
-		var lines: ILine[] = [];
-		var lineNumber = 1;
-		var lineOffset = 0;
-		lineEndingFinder.findAll(text).forEach(lineEnding => {
-			lines.push({
-				number: lineNumber++,
-				offset: lineOffset,
-				text: text.substring(lineOffset, lineEnding.index),
-				ending: lineEnding.text
-			});
-			lineOffset = lineEnding.index + lineEnding.text.length;
-		});
-		if (lineOffset < text.length || text === '') {
-			lines.push({
-				number: lineNumber,
-				offset: lineOffset,
-				text: text.substr(lineOffset)
-			});
-		}
-		return new Document(lines);
+	export function resetConfiguration() {
+		lineEndingFinder = new StringFinder(/\r?\n/g);
 	}
 
 }
+
+linez.resetConfiguration();
 
 export = linez;
