@@ -75,7 +75,7 @@ Configures linez to use the supplied options. Currently, only the newlines prope
 
 ```js
 linez.configure({
-  newlines = ['\n', '\r\n', '\r', '\u000B']
+  newlines: ['\n', '\r\n', '\r', '\u000B']
 });
 ```
 
