@@ -44,7 +44,7 @@ linez.configure({
 });
 ```
 
-Setting this property will automatically create a piped regular expression for you and use it in any future `linez.parse()` calls. You can make up your own newlines if you want. Linez doesn't care one way or the other.
+Setting this property will automatically create a piped regular expression for you and use it in any future `linez()` calls. You can make up your own newlines if you want. Linez doesn't care one way or the other.
 
 ```js
 linez.configure({
@@ -52,7 +52,7 @@ linez.configure({
 });
 ```
 
-This would be converted into `/(?:foo|bar)`. Newlines are just strings. They can be anything. There are, however, some known newline character sequences. Should you need them, refer to the following table:
+This would be converted into `/(foo|bar)/g`. Newlines are just strings. They can be anything. There are, however, some known newline character sequences. Should you need them, refer to the following table:
 
 | String   | Unicode        | Name                        |
 | -------- |:-------------- |:--------------------------- |
@@ -68,6 +68,7 @@ This would be converted into `/(?:foo|bar)`. Newlines are just strings. They can
 
 # API
 
+
 ### configure(options: IOptions)
 
 Configures linez to use the supplied options. Currently, only the newlines property is available, where you can specify any number of newline character sequences.
@@ -77,18 +78,25 @@ linez.configure({
   newlines = ['\n', '\r\n', '\r', '\u000B']
 });
 ```
-### [Document](https://github.com/jedmao/linez/blob/master/lib/Document.ts)
+
+### resetConfiguration()
+
+Resets the configuration to the default settings, using `/\r?\n/g` as the newlines regular expression.
+
+
+### Document
 
 ```ts
-constructor(public lines: ILine[]);
+constructor(public lines: Line[]);
 ```
 
 Calling the `toString()` method converts the documents lines into a string, discarding information about line numbers and offsets.
 
-### [ILine](https://github.com/jedmao/linez/blob/master/lib/ILine.ts)
+
+### Line
 
 ```ts
-interface ILine {
+interface Line {
   offset: number;
   number: number;
   text: string;
@@ -96,22 +104,23 @@ interface ILine {
 }
 ```
 
-### [ILine](https://github.com/jedmao/linez/blob/master/lib/IOptions.ts)
+### Options
 
 ```ts
-interface IOptions {
+interface Options {
   newlines?: string[];
 }
 ```
 
-### parse(text: string): void
+
+### linez(text: string): Document
 
 Parses text into a `Document`.
 
-[The specs](https://github.com/jedmao/linez/blob/master/test/spec/lib/linez.ts) show some great usage examples.
+[The specs](https://github.com/jedmao/linez/blob/master/lib/linez.spec.ts) show some great usage examples.
 
 ```ts
-var lines = linez.parse('foo\nbar\nbaz').lines;
+var lines = linez('foo\nbar\nbaz').lines;
 lines[1].offset; // 4
 lines[1].number; // 2
 lines[1].text; // bar
