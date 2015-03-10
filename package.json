@@ -11,10 +11,9 @@
     "newline",
     "ending"
   ],
-  "main": "./lib/api.js",
+  "main": "js/linez.js",
   "scripts": {
-    "postinstall": "./node_modules/.bin/bower install --production",
-    "test": "grunt test"
+    "test": "gulp test"
   },
   "repository": {
     "type": "git",
@@ -25,7 +24,6 @@
     "url": "https://github.com/jedmao/linez/issues"
   },
   "license": "MIT",
-  "dependencies": {},
   "devDependencies": {
     "chai": "^2.1.1",
     "del": "^1.1.1",
