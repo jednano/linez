@@ -1,9 +1,7 @@
 {
-  "name": "dt-node",
-  "version": "0.10.12",
+  "name": "dt-node-jedmao",
+  "version": "0.12.0",
   "ignore": [
-    "**/.*",
-    "node_modules",
-    "components"
+    "**/.*"
   ]
 }

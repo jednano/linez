@@ -3,9 +3,9 @@ import _IOptions = require('./IOptions');
 import _Document = require('./Document');
 import StringFinder = require('./StringFinder');
 
-
 var lineEndingFinder = new StringFinder(/\r?\n/g);
 
+// ReSharper disable once InconsistentNaming
 module linez {
 
 	export class Document extends _Document {

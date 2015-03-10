@@ -1,7 +1,7 @@
-﻿import sinonChai = require('../../sinon-chai');
+﻿import sinonChai = require('./test-common');
 var expect = sinonChai.expect;
-import Document = require('../../../lib/Document');
-import linez = require('../../../lib/linez');
+import Document = require('./Document');
+import linez = require('./linez');
 
 
 // ReSharper disable WrongExpressionStatement

@@ -1,32 +1,36 @@
 ﻿import IFoundString = require('./IFoundString');
 
-
 class StringFinder {
 
-	private _re: RegExp;
+	private newlinesRegex: RegExp;
 
 	constructor(needles: any) {
 		if (needles instanceof RegExp) {
-			this._re = needles;
-		} else if (needles instanceof Array) {
-			this._re = this.convertToPipedExpression(needles);
-		} else {
-			throw new Error('StringFinder constructor takes a string[] or RegExp');
+			this.newlinesRegex = needles;
+			return;
 		}
+		if (needles instanceof Array) {
+			this.newlinesRegex = this.convertToPipedExpression(needles);
+			return;
+		}
+		throw new Error('StringFinder constructor takes a string[] or RegExp');
 	}
 
 	private convertToPipedExpression(needles: string[]) {
 		needles = needles.map(needle => {
 			return '\\' + needle.split('').join('\\');
 		});
-		var result = new RegExp('(' + needles.join('|') + ')', 'g');
-		return result;
+		return new RegExp('(' + needles.join('|') + ')', 'g');
 	}
 
 	findAll(haystack: string) {
 		var matches: IFoundString[] = [];
-		var match;
-		while (match = this._re.exec(haystack)) {
+		var match: RegExpExecArray;
+		while (true) {
+			match = this.newlinesRegex.exec(haystack);
+			if (!match) {
+				break;
+			}
 			matches.push({
 				index: match.index,
 				text: match[0]
