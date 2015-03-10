@@ -1,13 +1,13 @@
 {
   "name": "linez",
   "private": true,
-  "version": "1.0.3",
+  "version": "2.0.0",
   "homepage": "https://github.com/jedmao/linez",
   "authors": [
     "Jed Mao <jedmao@outlook.com>"
   ],
   "description": "Parses lines from text, preserving line numbers, offsets and line endings.",
-  "main": "./lib/api.js",
+  "main": "js/linez.js",
   "keywords": [
     "lines",
     "line",
@@ -20,9 +20,7 @@
   "ignore": [
     "**/.*",
     "node_modules",
-    "bower_components",
-    "test",
-    "tests"
+    "bower_components"
   ],
   "dependencies": {
     "dt-node": "https://github.com/jedmao/dt-node.git#~0.12.0"
