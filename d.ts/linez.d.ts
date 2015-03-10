@@ -14,7 +14,7 @@ declare module linez {
     interface Options {
         newlines?: string[];
     }
-    function configure(options?: Options): void;
+    function configure(options: Options): void;
     function resetConfiguration(): void;
 }
 export = linez;

@@ -3,9 +3,6 @@ var expect = sinonChai.expect;
 var linez = require('./linez');
 // ReSharper disable WrongExpressionStatement
 describe('linez', function () {
-    beforeEach(function () {
-        linez.resetConfiguration();
-    });
     it('parses empty text', function () {
         var line = linez('').lines[0];
         expect(line.offset).to.eq(0);
@@ -51,19 +48,30 @@ describe('linez', function () {
         expect(lines[1].ending).to.eq('\r\n');
         expect(lines[2].ending).to.be.undefined;
     });
-    it('supports a custom newlines string array', function () {
-        linez.configure({
-            newlines: ['\t', '\u0085', '\r']
+    describe('configure method', function () {
+        beforeEach(function () {
+            linez.resetConfiguration();
         });
-        var lines = linez('foo\rbar\tbaz\u0085qux\n').lines;
-        expect(lines[0].text).to.eq('foo');
-        expect(lines[0].ending).to.eq('\r');
-        expect(lines[1].text).to.eq('bar');
-        expect(lines[1].ending).to.eq('\t');
-        expect(lines[2].text).to.eq('baz');
-        expect(lines[2].ending).to.eq('\u0085');
-        expect(lines[3].text).to.eq('qux\n');
-        expect(lines[3].ending).to.be.undefined;
+        it('supports a custom newlines string array', function () {
+            linez.configure({
+                newlines: ['\t', '\u0085', '\r']
+            });
+            var lines = linez('foo\rbar\tbaz\u0085qux\n').lines;
+            expect(lines[0].text).to.eq('foo');
+            expect(lines[0].ending).to.eq('\r');
+            expect(lines[1].text).to.eq('bar');
+            expect(lines[1].ending).to.eq('\t');
+            expect(lines[2].text).to.eq('baz');
+            expect(lines[2].ending).to.eq('\u0085');
+            expect(lines[3].text).to.eq('qux\n');
+            expect(lines[3].ending).to.be.undefined;
+        });
+        it('errors when no configuration options are sent', function () {
+            var fn = function () {
+                linez.configure(void (0));
+            };
+            expect(fn).to.throw('No configuration options to configure');
+        });
     });
     it('supports resetting the configuration', function () {
         linez.configure({ newlines: ['bar'] });
@@ -77,8 +85,7 @@ describe('linez', function () {
         var contents;
         var doc;
         before(function () {
-            linez.resetConfiguration();
-            contents = 'foo\nbar\n';
+            contents = 'foo\nbar';
             doc = linez(contents);
         });
         it('constructs a document with lines', function () {

@@ -38,7 +38,10 @@ var linez;
     })();
     linez.Document = Document;
     function configure(options) {
-        options = options || {};
+        if (!options) {
+            throw new Error('No configuration options to configure');
+        }
+        /* istanbul ignore else */
         if (options.newlines) {
             lineEndingFinder = new StringFinder(options.newlines);
         }

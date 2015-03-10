@@ -53,8 +53,11 @@ module linez {
 		newlines?: string[];
 	}
 
-	export function configure(options?: Options) {
-		options = options || {};
+	export function configure(options: Options) {
+		if (!options) {
+			throw new Error('No configuration options to configure');
+		}
+		/* istanbul ignore else */
 		if (options.newlines) {
 			lineEndingFinder = new StringFinder(options.newlines);
 		}
