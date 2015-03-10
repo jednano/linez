@@ -2,12 +2,14 @@
 
 > Parses lines from text, preserving line numbers, offsets and line endings.
 
-[![Build Status][]](http://travis-ci.org/jedmao/linez)
-[![Dependency Status][]](https://gemnasium.com/jedmao/linez)
-[![NPM version][]](http://badge.fury.io/js/linez)
-[![Views][]](https://sourcegraph.com/github.com/jedmao/linez)
+[![Build Status](https://secure.travis-ci.org/jedmao/linez.svg?branch=master)](http://travis-ci.org/jedmao/linez)
+[![Code Climate](https://codeclimate.com/github/jedmao/linez/badges/gpa.svg)](https://codeclimate.com/github/jedmao/linez)
+[![Test Coverage](https://codeclimate.com/github/jedmao/linez/badges/coverage.svg)](https://codeclimate.com/github/jedmao/linez)
+[![Dependency Status](https://gemnasium.com/jedmao/linez.svg)](https://gemnasium.com/jedmao/linez)
+[![npm version](https://badge.fury.io/js/linez.svg)](http://badge.fury.io/js/linez)
+[![Views](https://sourcegraph.com/api/repos/github.com/jedmao/linez/counters/views-24h.svg)](https://sourcegraph.com/github.com/jedmao/linez)
 
-[![NPM](https://nodei.co/npm/linez.png?downloads=true)](https://nodei.co/npm/linez/)
+[![npm](https://nodei.co/npm/linez.png?downloads=true)](https://nodei.co/npm/linez/)
 
 
 # Getting Started
@@ -120,12 +122,3 @@ lines[1].ending; // \n
 ## License
 
 Released under the MIT license.
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/jedmao/linez/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
-
-
-[Build Status]: https://secure.travis-ci.org/jedmao/linez.png?branch=master
-[Dependency Status]: https://gemnasium.com/jedmao/linez.png
-[NPM version]: https://badge.fury.io/js/linez.png
-[Views]: https://sourcegraph.com/api/repos/github.com/jedmao/linez/counters/views-24h.png
