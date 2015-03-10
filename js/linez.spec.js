@@ -86,7 +86,8 @@ describe('linez', function () {
             expect(doc.lines).to.have.length(2);
         });
         it('converts lines into a string with toString()', function () {
-            expect(doc.toString()).to.eq(contents);
+            expect(doc + '').to.eq(contents);
+            expect(new linez.Document() + '').to.be.empty;
         });
     });
 });

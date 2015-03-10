@@ -30,9 +30,6 @@ var linez;
             this.lines = lines || [];
         }
         Document.prototype.toString = function () {
-            if (!this.lines) {
-                return '';
-            }
             return this.lines.map(function (line) {
                 return line.text + (line.ending || '');
             }).join('');

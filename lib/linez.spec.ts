@@ -100,7 +100,8 @@ describe('linez',() => {
 		});
 
 		it('converts lines into a string with toString()', () => {
-			expect(doc.toString()).to.eq(contents);
+			expect(doc + '').to.eq(contents);
+			expect(new linez.Document() + '').to.be.empty;
 		});
 	});
 

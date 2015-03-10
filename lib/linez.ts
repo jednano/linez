@@ -36,9 +36,6 @@ module linez {
 		}
 
 		toString() {
-			if (!this.lines) {
-				return '';
-			}
 			return this.lines.map(line => {
 				return line.text + (line.ending || '');
 			}).join('');
