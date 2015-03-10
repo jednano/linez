@@ -1,19 +1,20 @@
-﻿import IFoundString = require('./IFoundString');
-
-class StringFinder {
+﻿class StringFinder {
 
 	private newlinesRegex: RegExp;
 
-	constructor(needles: any) {
+	constructor(needles: string[]|RegExp) {
 		if (needles instanceof RegExp) {
-			this.newlinesRegex = needles;
+			if (!needles.global) {
+				throw new Error('StringFinder regular expression must have a global flag');
+			}
+			this.newlinesRegex = <any>needles;
 			return;
 		}
 		if (needles instanceof Array) {
-			this.newlinesRegex = this.convertToPipedExpression(needles);
+			this.newlinesRegex = this.convertToPipedExpression(<any>needles);
 			return;
 		}
-		throw new Error('StringFinder constructor takes a string[] or RegExp');
+		throw new Error('Unexpected type in StringFinder constructor argument: ' + typeof needles);
 	}
 
 	private convertToPipedExpression(needles: string[]) {
@@ -24,10 +25,12 @@ class StringFinder {
 	}
 
 	findAll(haystack: string) {
-		var matches: IFoundString[] = [];
-		var match: RegExpExecArray;
+		var matches: {
+			index: number;
+			text: string;
+		}[] = [];
 		while (true) {
-			match = this.newlinesRegex.exec(haystack);
+			var match = this.newlinesRegex.exec(haystack);
 			if (!match) {
 				break;
 			}

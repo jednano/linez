@@ -2,7 +2,6 @@
 var expect = sinonChai.expect;
 import linez = require('./linez');
 
-
 // ReSharper disable WrongExpressionStatement
 describe('linez', () => {
 

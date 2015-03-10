@@ -1,6 +1,9 @@
 var StringFinder = (function () {
     function StringFinder(needles) {
         if (needles instanceof RegExp) {
+            if (!needles.global) {
+                throw new Error('StringFinder regular expression must have a global flag');
+            }
             this.newlinesRegex = needles;
             return;
         }
@@ -8,7 +11,7 @@ var StringFinder = (function () {
             this.newlinesRegex = this.convertToPipedExpression(needles);
             return;
         }
-        throw new Error('StringFinder constructor takes a string[] or RegExp');
+        throw new Error('Unexpected type in StringFinder constructor argument: ' + typeof needles);
     }
     StringFinder.prototype.convertToPipedExpression = function (needles) {
         needles = needles.map(function (needle) {

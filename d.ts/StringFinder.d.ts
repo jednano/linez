@@ -1,8 +1,10 @@
-import IFoundString = require('./IFoundString');
 declare class StringFinder {
     private newlinesRegex;
-    constructor(needles: any);
+    constructor(needles: string[] | RegExp);
     private convertToPipedExpression(needles);
-    findAll(haystack: string): IFoundString[];
+    findAll(haystack: string): {
+        index: number;
+        text: string;
+    }[];
 }
 export = StringFinder;
