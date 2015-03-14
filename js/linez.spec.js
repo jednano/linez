@@ -82,19 +82,43 @@ describe('linez', function () {
         expect(lines[0].ending).to.eq('\n');
     });
     describe('Document', function () {
-        var contents;
-        var doc;
-        before(function () {
-            contents = 'foo\nbar';
-            doc = linez(contents);
-        });
         it('constructs a document with lines', function () {
+            var doc = linez('foo\nbar');
             expect(doc).to.exist;
             expect(doc.lines).to.have.length(2);
         });
         it('converts lines into a string with toString()', function () {
+            var contents = 'foo\nbar';
+            var doc = linez(contents);
             expect(doc + '').to.eq(contents);
             expect(new linez.Document() + '').to.be.empty;
+        });
+        describe('byte order marks', function () {
+            it('detects utf-8 bom', function () {
+                var doc = linez('\u00EF\u00BB\u00BFfoo');
+                expect(doc.charset).to.eq('utf-8-bom');
+                expect(doc.lines[0].text).to.eq('foo');
+            });
+            it('detects utf-16be bom', function () {
+                var doc = linez('\u00FE\u00FFfoo');
+                expect(doc.charset).to.eq('utf-16be');
+                expect(doc.lines[0].text).to.eq('foo');
+            });
+            it('detects utf-16le bom', function () {
+                var doc = linez('\u00FF\u00FEfoo');
+                expect(doc.charset).to.eq('utf-16le');
+                expect(doc.lines[0].text).to.eq('foo');
+            });
+            it('detects utf-32le bom', function () {
+                var doc = linez('\u00FF\u00FE\u0000\u0000foo');
+                expect(doc.charset).to.eq('utf-32le');
+                expect(doc.lines[0].text).to.eq('foo');
+            });
+            it('detects utf-32be bom', function () {
+                var doc = linez('\u0000\u0000\u00FE\u00FFfoo');
+                expect(doc.charset).to.eq('utf-32be');
+                expect(doc.lines[0].text).to.eq('foo');
+            });
         });
     });
 });

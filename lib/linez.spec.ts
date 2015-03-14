@@ -95,21 +95,52 @@ describe('linez', () => {
 	});
 
 	describe('Document', () => {
-		var contents: string;
-		var doc: linez.Document;
-		before(() => {
-			contents = 'foo\nbar';
-			doc = linez(contents);
-		});
 
 		it('constructs a document with lines', () => {
+			var doc = linez('foo\nbar');
 			expect(doc).to.exist;
 			expect(doc.lines).to.have.length(2);
 		});
 
 		it('converts lines into a string with toString()', () => {
+			var contents = 'foo\nbar';
+			var doc = linez(contents);
 			expect(doc + '').to.eq(contents);
 			expect(new linez.Document() + '').to.be.empty;
+		});
+
+		describe('byte order marks', () => {
+
+			it('detects utf-8 bom', () => {
+				var doc = linez('\u00EF\u00BB\u00BFfoo');
+				expect(doc.charset).to.eq('utf-8-bom');
+				expect(doc.lines[0].text).to.eq('foo');
+			});
+
+			it('detects utf-16be bom', () => {
+				var doc = linez('\u00FE\u00FFfoo');
+				expect(doc.charset).to.eq('utf-16be');
+				expect(doc.lines[0].text).to.eq('foo');
+			});
+
+			it('detects utf-16le bom', () => {
+				var doc = linez('\u00FF\u00FEfoo');
+				expect(doc.charset).to.eq('utf-16le');
+				expect(doc.lines[0].text).to.eq('foo');
+			});
+
+			it('detects utf-32le bom', () => {
+				var doc = linez('\u00FF\u00FE\u0000\u0000foo');
+				expect(doc.charset).to.eq('utf-32le');
+				expect(doc.lines[0].text).to.eq('foo');
+			});
+
+			it('detects utf-32be bom', () => {
+				var doc = linez('\u0000\u0000\u00FE\u00FFfoo');
+				expect(doc.charset).to.eq('utf-32be');
+				expect(doc.lines[0].text).to.eq('foo');
+			});
+
 		});
 	});
 

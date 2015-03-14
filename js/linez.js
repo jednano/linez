@@ -29,11 +29,34 @@ var linez;
     var Document = (function () {
         function Document(lines) {
             this.lines = lines || [];
+            this.detectCharset();
         }
+        Document.prototype.detectCharset = function () {
+            var firstLine = this.lines[0];
+            if (!firstLine) {
+                return;
+            }
+            var boms = Object.keys(Document.charsets);
+            for (var i = 0; i < boms.length; i++) {
+                var bom = boms[i];
+                if (firstLine.text.slice(0, bom.length) === bom) {
+                    this.charset = Document.charsets[bom];
+                    firstLine.text = firstLine.text.substr(bom.length);
+                    break;
+                }
+            }
+        };
         Document.prototype.toString = function () {
             return this.lines.map(function (line) {
                 return line.text + (line.ending || '');
             }).join('');
+        };
+        Document.charsets = {
+            '\u00EF\u00BB\u00BF': 'utf-8-bom',
+            '\u00FE\u00FF': 'utf-16be',
+            '\u00FF\u00FE\u0000\u0000': 'utf-32le',
+            '\u00FF\u00FE': 'utf-16le',
+            '\u0000\u0000\u00FE\u00FF': 'utf-32be'
         };
         return Document;
     })();
