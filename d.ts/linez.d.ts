@@ -15,7 +15,7 @@ declare module linez {
         offset: number;
         number: number;
         text: string;
-        ending?: string;
+        ending: string;
     }
     interface Options {
         newlines?: string[];

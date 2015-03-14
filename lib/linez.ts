@@ -20,7 +20,8 @@ function linez(text: string) {
 		lines.push({
 			number: lineNumber,
 			offset: lineOffset,
-			text: text.substr(lineOffset)
+			text: text.substr(lineOffset),
+			ending: ''
 		});
 	}
 	return new linez.Document(lines);
@@ -85,7 +86,7 @@ module linez {
 
 		toString() {
 			return this.bom + this.lines.map(line => {
-				return line.text + (line.ending || '');
+				return line.text + line.ending;
 			}).join('');
 		}
 	}
@@ -94,7 +95,7 @@ module linez {
 		offset: number;
 		number: number;
 		text: string;
-		ending?: string;
+		ending: string;
 	}
 
 	export interface Options {

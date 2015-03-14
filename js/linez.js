@@ -18,7 +18,8 @@ function linez(text) {
         lines.push({
             number: lineNumber,
             offset: lineOffset,
-            text: text.substr(lineOffset)
+            text: text.substr(lineOffset),
+            ending: ''
         });
     }
     return new linez.Document(lines);
@@ -61,7 +62,7 @@ var linez;
         };
         Document.prototype.toString = function () {
             return this.bom + this.lines.map(function (line) {
-                return line.text + (line.ending || '');
+                return line.text + line.ending;
             }).join('');
         };
         Document.boms = {

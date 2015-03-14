@@ -10,7 +10,7 @@ describe('linez', () => {
 		expect(line.offset).to.eq(0);
 		expect(line.number).to.eq(1);
 		expect(line.text).to.eq('');
-		expect(line.ending).to.be.undefined;
+		expect(line.ending).to.be.empty;
 	});
 
 	it('parses a single line with no line ending', () => {
@@ -18,7 +18,7 @@ describe('linez', () => {
 		expect(line.offset).to.eq(0);
 		expect(line.number).to.eq(1);
 		expect(line.text).to.eq('foo');
-		expect(line.ending).to.be.undefined;
+		expect(line.ending).to.be.empty;
 	});
 
 	it('parses a single line with a line ending', () => {
@@ -54,7 +54,7 @@ describe('linez', () => {
 		var lines = linez('foo\nbar\r\nbaz').lines;
 		expect(lines[0].ending).to.eq('\n');
 		expect(lines[1].ending).to.eq('\r\n');
-		expect(lines[2].ending).to.be.undefined;
+		expect(lines[2].ending).to.be.empty;
 	});
 
 	describe('configure method',() => {
@@ -74,7 +74,7 @@ describe('linez', () => {
 			expect(lines[2].text).to.eq('baz');
 			expect(lines[2].ending).to.eq('\u0085');
 			expect(lines[3].text).to.eq('qux\n');
-			expect(lines[3].ending).to.be.undefined;
+			expect(lines[3].ending).to.be.empty;
 		});
 
 		it('errors when no configuration options are sent', () => {
