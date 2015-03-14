@@ -1,8 +1,10 @@
 declare function linez(text: string): linez.Document;
 declare module linez {
     class Document {
-        private bom;
+        private static boms;
         private static charsets;
+        private bom;
+        private _charset;
         charset: string;
         lines: Line[];
         constructor(lines?: Line[]);

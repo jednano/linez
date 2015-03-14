@@ -30,8 +30,8 @@ function linez(text: string) {
 module linez {
 
 	export class Document {
-		private bom: string;
-		private static charsets = {
+
+		private static boms = {
 			'\u00EF\u00BB\u00BF': 'utf-8-bom',
 			'\u00FE\u00FF': 'utf-16be',
 			'\u00FF\u00FE\u0000\u0000': 'utf-32le',
@@ -39,7 +39,27 @@ module linez {
 			'\u0000\u0000\u00FE\u00FF': 'utf-32be'
 		};
 
-		charset: string;
+		private static charsets = {
+			'utf-8-bom': '\u00EF\u00BB\u00BF',
+			'utf-16be': '\u00FE\u00FF',
+			'utf-32le': '\u00FF\u00FE\u0000\u0000',
+			'utf-16le': '\u00FF\u00FE',
+			'utf-32be': '\u0000\u0000\u00FE\u00FF'
+		};
+
+		private bom = '';
+
+		private _charset = '';
+
+		get charset() {
+			return this._charset;
+		}
+
+		set charset(value: string) {
+			this.bom = Document.charsets[value] || '';
+			this._charset = value || '';
+		}
+
 		lines: Line[];
 
 		constructor(lines?: Line[]) {
@@ -52,11 +72,11 @@ module linez {
 			if (!firstLine) {
 				return;
 			}
-			var boms = Object.keys(Document.charsets);
+			var boms = Object.keys(Document.boms);
 			for (var i = 0; i < boms.length; i++) {
 				var bom = boms[i];
 				if (firstLine.text.slice(0, bom.length) === bom) {
-					this.charset = Document.charsets[bom];
+					this.charset = Document.boms[bom];
 					firstLine.text = firstLine.text.substr(bom.length);
 					break;
 				}
@@ -64,7 +84,7 @@ module linez {
 		}
 
 		toString() {
-			return this.lines.map(line => {
+			return this.bom + this.lines.map(line => {
 				return line.text + (line.ending || '');
 			}).join('');
 		}

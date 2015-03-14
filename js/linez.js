@@ -28,35 +28,55 @@ var linez;
 (function (linez) {
     var Document = (function () {
         function Document(lines) {
+            this.bom = '';
+            this._charset = '';
             this.lines = lines || [];
             this.detectCharset();
         }
+        Object.defineProperty(Document.prototype, "charset", {
+            get: function () {
+                return this._charset;
+            },
+            set: function (value) {
+                this.bom = Document.charsets[value] || '';
+                this._charset = value || '';
+            },
+            enumerable: true,
+            configurable: true
+        });
         Document.prototype.detectCharset = function () {
             var firstLine = this.lines[0];
             if (!firstLine) {
                 return;
             }
-            var boms = Object.keys(Document.charsets);
+            var boms = Object.keys(Document.boms);
             for (var i = 0; i < boms.length; i++) {
                 var bom = boms[i];
                 if (firstLine.text.slice(0, bom.length) === bom) {
-                    this.charset = Document.charsets[bom];
+                    this.charset = Document.boms[bom];
                     firstLine.text = firstLine.text.substr(bom.length);
                     break;
                 }
             }
         };
         Document.prototype.toString = function () {
-            return this.lines.map(function (line) {
+            return this.bom + this.lines.map(function (line) {
                 return line.text + (line.ending || '');
             }).join('');
         };
-        Document.charsets = {
+        Document.boms = {
             '\u00EF\u00BB\u00BF': 'utf-8-bom',
             '\u00FE\u00FF': 'utf-16be',
             '\u00FF\u00FE\u0000\u0000': 'utf-32le',
             '\u00FF\u00FE': 'utf-16le',
             '\u0000\u0000\u00FE\u00FF': 'utf-32be'
+        };
+        Document.charsets = {
+            'utf-8-bom': '\u00EF\u00BB\u00BF',
+            'utf-16be': '\u00FE\u00FF',
+            'utf-32le': '\u00FF\u00FE\u0000\u0000',
+            'utf-16le': '\u00FF\u00FE',
+            'utf-32be': '\u0000\u0000\u00FE\u00FF'
         };
         return Document;
     })();

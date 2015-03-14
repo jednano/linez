@@ -88,7 +88,7 @@ describe('linez', function () {
             expect(doc.lines).to.have.length(2);
         });
         it('converts lines into a string with toString()', function () {
-            var contents = 'foo\nbar';
+            var contents = '\u00EF\u00BB\u00BFfoo\nbar';
             var doc = linez(contents);
             expect(doc + '').to.eq(contents);
             expect(new linez.Document() + '').to.be.empty;
