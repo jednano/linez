@@ -22,7 +22,7 @@ describe('linez', function () {
         expect(line.offset).to.eq(0);
         expect(line.number).to.eq(1);
         expect(line.text).to.eq('foo');
-        expect(line.ending).to.be.eq('\n');
+        expect(line.ending).to.eq('\n');
     });
     it('sets proper line offsets', function () {
         var lines = linez('f\noo\r\nbar').lines;

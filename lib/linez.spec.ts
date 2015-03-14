@@ -3,7 +3,7 @@ var expect = sinonChai.expect;
 import linez = require('./linez');
 
 // ReSharper disable WrongExpressionStatement
-describe('linez',() => {
+describe('linez', () => {
 
 	it('parses empty text', () => {
 		var line = linez('').lines[0];
@@ -26,7 +26,7 @@ describe('linez',() => {
 		expect(line.offset).to.eq(0);
 		expect(line.number).to.eq(1);
 		expect(line.text).to.eq('foo');
-		expect(line.ending).to.be.eq('\n');
+		expect(line.ending).to.eq('\n');
 	});
 
 	it('sets proper line offsets', () => {

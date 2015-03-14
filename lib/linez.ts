@@ -3,6 +3,7 @@
 var lineEndingFinder: StringFinder;
 
 function linez(text: string) {
+	// ReSharper disable once RedundantQualifier
 	var lines: linez.Line[] = [];
 	var lineNumber = 1;
 	var lineOffset = 0;

@@ -1,6 +1,7 @@
 var StringFinder = require('./StringFinder');
 var lineEndingFinder;
 function linez(text) {
+    // ReSharper disable once RedundantQualifier
     var lines = [];
     var lineNumber = 1;
     var lineOffset = 0;

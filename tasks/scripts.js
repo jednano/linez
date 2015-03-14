@@ -6,7 +6,7 @@ var ts = require('gulp-typescript');
 
 module.exports = function() {
 	var result = gulp.src([
-			'bower_components/**/*.d.ts',
+			'typings/**/*.d.ts',
 			'lib/**/*.ts'
 		], {
 			base: './lib'
