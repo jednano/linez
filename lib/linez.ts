@@ -107,6 +107,15 @@ module linez {
 			this.lines = lines || [];
 		}
 
+		toBuffer() {
+			var charset = this.charset.replace(/-bom$/, '');
+			var contents = new Buffer(this.toString(), charset);
+			if (this.bom) {
+				return Buffer.concat([this.bom, contents]);
+			}
+			return contents;
+		}
+
 		toString() {
 			return this.lines.map(line => {
 				return line.text + line.ending;

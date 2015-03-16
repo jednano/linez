@@ -106,7 +106,16 @@ describe('linez', () => {
 			expect(doc.lines).to.have.length(2);
 		});
 
-		it('converts lines into a string with toString()', () => {
+		it('converts doc into a buffer with toBuffer()',() => {
+			var contents = Buffer.concat([
+				new Buffer([0xef, 0xbb, 0xbf]),
+				new Buffer('foo', 'utf8')
+			]);
+			var doc = linez(contents);
+			expect((<any>doc.toBuffer()).equals(contents)).to.be.true;
+		});
+
+		it('converts doc into a string with toString()', () => {
 			var contents = 'foo\nbar';
 			var doc = linez(contents);
 			expect(doc + '').to.eq(contents);

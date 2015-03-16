@@ -8,6 +8,7 @@ declare module linez {
         private contents;
         lines: Line[];
         constructor(lines?: Line[]);
+        toBuffer(): Buffer;
         toString(): string;
     }
     interface Line {

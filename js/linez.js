@@ -94,6 +94,14 @@ var linez;
             enumerable: true,
             configurable: true
         });
+        Document.prototype.toBuffer = function () {
+            var charset = this.charset.replace(/-bom$/, '');
+            var contents = new Buffer(this.toString(), charset);
+            if (this.bom) {
+                return Buffer.concat([this.bom, contents]);
+            }
+            return contents;
+        };
         Document.prototype.toString = function () {
             return this.lines.map(function (line) {
                 return line.text + line.ending;
