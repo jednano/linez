@@ -1,5 +1,7 @@
+var iconv = require('iconv-lite');
 var StringFinder = require('./StringFinder');
 var lineEndingFinder;
+iconv.extendNodeEncodings();
 function linez(file) {
     // ReSharper restore RedundantQualifier
     if (typeof file === 'string') {
@@ -12,10 +14,10 @@ function linez(file) {
     switch (doc.charset) {
         case 'utf-8-bom':
         case 'utf-16le':
-            var encoding = doc.charset.replace(/-/g, '').replace(/bom$/, '');
+        case 'utf-16be':
+            var encoding = doc.charset.replace(/bom$/, '');
             doc.lines = parseLines(buffer.slice(bom.length).toString(encoding));
             break;
-        case 'utf-16be':
         case 'utf-32le':
         case 'utf-32be':
             throw new Error('Decoding ' + doc.charset + ' charset not yet supported');

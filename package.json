@@ -38,5 +38,8 @@
     "sinon": "^1.13.0",
     "sinon-chai": "^2.7.0",
     "through2": "^0.6.3"
+  },
+  "dependencies": {
+    "iconv-lite": "^0.4.7"
   }
 }

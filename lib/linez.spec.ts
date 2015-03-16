@@ -1,6 +1,10 @@
-﻿import sinonChai = require('./test-common');
-var expect = sinonChai.expect;
+﻿var iconv = require('iconv-lite');
+
+import sinonChai = require('./test-common');
 import linez = require('./linez');
+
+var expect = sinonChai.expect;
+iconv.extendNodeEncodings();
 
 // ReSharper disable WrongExpressionStatement
 describe('linez', () => {
@@ -111,23 +115,31 @@ describe('linez', () => {
 
 		describe('byte order marks', () => {
 
-			it('detects utf-8-bom', () => {
-				var doc = linez(new Buffer([0xef, 0xbb, 0xbf, 0x66, 0x6f, 0x6f]));
+			it('detects and decodes a utf-8-bom document', () => {
+				var doc = linez(Buffer.concat([
+					new Buffer([0xef, 0xbb, 0xbf]),
+					new Buffer('foo', 'utf8')
+				]));
 				expect(doc.charset).to.eq('utf-8-bom');
 				expect(doc.lines[0].text).to.eq('foo');
 			});
 
-			it('detects utf-16le bom', () => {
-				var doc = linez(new Buffer([0xff, 0xfe, 0x66, 0x00, 0x6f, 0x00, 0x6f, 0x00]));
+			it('detects and decodes utf-16le bom document', () => {
+				var doc = linez(Buffer.concat([
+					new Buffer([0xff, 0xfe]),
+					new Buffer('foo', 'utf16le')
+				]));
 				expect(doc.charset).to.eq('utf-16le');
 				expect(doc.lines[0].text).to.eq('foo');
 			});
 
-			it('throws a not supported error for utf-16be bom',() => {
-				var fn = () => {
-					linez(new Buffer([0xfe, 0xff]));
-				};
-				expect(fn).to.throw('Decoding utf-16be charset not yet supported');
+			it('detects and decodes utf-16be bom document',() => {
+				var doc = linez(Buffer.concat([
+					new Buffer([0xfe, 0xff]),
+					new Buffer('foo', 'utf16be')
+				]));
+				expect(doc.charset).to.eq('utf-16be');
+				expect(doc.lines[0].text).to.eq('foo');
 			});
 
 			it('throws a not supported error for utf-32le bom',() => {

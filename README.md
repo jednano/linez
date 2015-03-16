@@ -74,10 +74,10 @@ Also referred to as BOM signatures, these are the bytes at the beginning of a fi
 
 - utf-8-bom
 - utf-16le
+- utf-16be
 
 #### Unsupported BOMs
 
-- utf-16be
 - utf-32le
 - utf-32be
 

@@ -1,6 +1,9 @@
-﻿import StringFinder = require('./StringFinder');
+﻿var iconv = require('iconv-lite');
+
+import StringFinder = require('./StringFinder');
 
 var lineEndingFinder: StringFinder;
+iconv.extendNodeEncodings();
 
 // ReSharper disable RedundantQualifier
 function linez(contents: string): linez.Document;
@@ -17,10 +20,10 @@ function linez(file: string|Buffer): linez.Document {
 	switch (doc.charset) {
 		case 'utf-8-bom':
 		case 'utf-16le':
-			var encoding = doc.charset.replace(/-/g, '').replace(/bom$/, '');
+		case 'utf-16be':
+			var encoding = doc.charset.replace(/bom$/, '');
 			doc.lines = parseLines(buffer.slice(bom.length).toString(encoding));
 			break;
-		case 'utf-16be':
 		case 'utf-32le':
 		case 'utf-32be':
 			// TODO: Properly decode these charsets
