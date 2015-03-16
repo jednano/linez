@@ -1,6 +1,49 @@
 var StringFinder = require('./StringFinder');
 var lineEndingFinder;
-function linez(text) {
+function linez(file) {
+    // ReSharper restore RedundantQualifier
+    if (typeof file === 'string') {
+        return new linez.Document(parseLines(file));
+    }
+    var buffer = file;
+    var doc = new linez.Document();
+    doc.charset = detectCharset(buffer);
+    var bom = boms[doc.charset];
+    switch (doc.charset) {
+        case 'utf-8-bom':
+        case 'utf-16le':
+            var encoding = doc.charset.replace(/-/g, '').replace(/bom$/, '');
+            doc.lines = parseLines(buffer.slice(bom.length).toString(encoding));
+            break;
+        case 'utf-16be':
+        case 'utf-32le':
+        case 'utf-32be':
+            throw new Error('Decoding ' + doc.charset + ' charset not yet supported');
+        default:
+            doc.lines = parseLines(buffer.toString('utf8'));
+            break;
+    }
+    return doc;
+}
+function detectCharset(buffer) {
+    var bomKeys = Object.keys(boms);
+    for (var i = 0; i < bomKeys.length; i++) {
+        var charset = bomKeys[i];
+        var bom = boms[charset];
+        if (buffer.slice(0, bom.length).equals(bom)) {
+            return charset;
+        }
+    }
+    return '';
+}
+var boms = {
+    'utf-8-bom': new Buffer([0xef, 0xbb, 0xbf]),
+    'utf-16be': new Buffer([0xfe, 0xff]),
+    'utf-32le': new Buffer([0xff, 0xfe, 0x00, 0x00]),
+    'utf-16le': new Buffer([0xff, 0xfe]),
+    'utf-32be': new Buffer([0x00, 0x00, 0xfe, 0xff])
+};
+function parseLines(text) {
     // ReSharper disable once RedundantQualifier
     var lines = [];
     var lineNumber = 1;
@@ -22,62 +65,37 @@ function linez(text) {
             ending: ''
         });
     }
-    return new linez.Document(lines);
+    return lines;
 }
 // ReSharper disable once InconsistentNaming
 var linez;
 (function (linez) {
     var Document = (function () {
         function Document(lines) {
-            this.bom = '';
             this._charset = '';
             this.lines = lines || [];
-            this.detectCharset();
         }
+        Object.defineProperty(Document.prototype, "bom", {
+            get: function () {
+                return boms[this.charset];
+            },
+            enumerable: true,
+            configurable: true
+        });
         Object.defineProperty(Document.prototype, "charset", {
             get: function () {
                 return this._charset;
             },
             set: function (value) {
-                this.bom = Document.charsets[value] || '';
                 this._charset = value || '';
             },
             enumerable: true,
             configurable: true
         });
-        Document.prototype.detectCharset = function () {
-            var firstLine = this.lines[0];
-            if (!firstLine) {
-                return;
-            }
-            var boms = Object.keys(Document.boms);
-            for (var i = 0; i < boms.length; i++) {
-                var bom = boms[i];
-                if (firstLine.text.slice(0, bom.length) === bom) {
-                    this.charset = Document.boms[bom];
-                    firstLine.text = firstLine.text.substr(bom.length);
-                    break;
-                }
-            }
-        };
         Document.prototype.toString = function () {
-            return this.bom + this.lines.map(function (line) {
+            return this.lines.map(function (line) {
                 return line.text + line.ending;
             }).join('');
-        };
-        Document.boms = {
-            '\u00EF\u00BB\u00BF': 'utf-8-bom',
-            '\u00FE\u00FF': 'utf-16be',
-            '\u00FF\u00FE\u0000\u0000': 'utf-32le',
-            '\u00FF\u00FE': 'utf-16le',
-            '\u0000\u0000\u00FE\u00FF': 'utf-32be'
-        };
-        Document.charsets = {
-            'utf-8-bom': '\u00EF\u00BB\u00BF',
-            'utf-16be': '\u00FE\u00FF',
-            'utf-32le': '\u00FF\u00FE\u0000\u0000',
-            'utf-16le': '\u00FF\u00FE',
-            'utf-32be': '\u0000\u0000\u00FE\u00FF'
         };
         return Document;
     })();

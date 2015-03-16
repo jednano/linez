@@ -12,29 +12,29 @@
 [![npm](https://nodei.co/npm/linez.png?downloads=true)](https://nodei.co/npm/linez/)
 
 
-# Getting Started
+## Getting Started
 
-## Installation
+### Installation
 
 ```bash
 $ npm install linez
 ```
 
-## TypeScript Usage
+### TypeScript Usage
 
 ```ts
 /// <reference path="node_modules/linez/linez.d.ts" />
 import linez = require('linez');
 ```
 
-## JavaScript Usage
+### JavaScript Usage
 
 ```js
 var linez = require('linez');
 ```
 
 
-# Introduction
+## Introduction
 
 By default, linez uses `/\r?\n/g` as the regular expression to detect newline character sequences and split lines. This regular expression is tuned for performance and only covers the most common newline types (i.e., `\n` and `\r\n`). If you have need for more newline character sequences, you can configure linez with the `configure` method.
 
@@ -66,6 +66,28 @@ This would be converted into `/(foo|bar)/g`. Newlines are just strings. They can
 | `\u2029` | U+2029         | Paragraph Separator         |
 
 
+### Byte Order Marks
+
+Also referred to as BOM signatures, these are the bytes at the beginning of a file that indicating the encoding in which the file is written. Currently, linez only reads BOMs to detect the encoding and does not take into account the contents of the file.
+
+#### Supported BOMs
+
+- utf-8-bom
+- utf-16le
+
+#### Unsupported BOMs
+
+- utf-16be
+- utf-32le
+- utf-32be
+
+If linez detects an unsupported BOM, an error will be thrown, indicating that decoding the detected charset is not supported.
+
+#### Default decoding
+
+By default, the document will attempt to be decoded as utf8. This is the default behavior of [the Node API's conversion from buffers into strings](https://nodejs.org/api/buffer.html#buffer_buf_tostring_encoding_start_end).
+
+
 # API
 
 
@@ -90,7 +112,7 @@ Resets the configuration to the default settings, using `/\r?\n/g` as the newlin
 constructor(public lines: Line[]);
 ```
 
-Calling the `toString()` method converts the documents lines into a string, discarding information about line numbers and offsets.
+Calling the `toString()` method converts the document's lines into a string, discarding information about line numbers and offsets.
 
 
 ### Line
@@ -100,7 +122,7 @@ interface Line {
   offset: number;
   number: number;
   text: string;
-  ending?: string;
+  ending: string;
 }
 ```
 
@@ -113,7 +135,7 @@ interface Options {
 ```
 
 
-### linez(text: string): Document
+### linez(file: string|Buffer): Document
 
 Parses text into a `Document`.
 
@@ -126,6 +148,8 @@ lines[1].number; // 2
 lines[1].text; // bar
 lines[1].ending; // \n
 ```
+
+Note: You can also pass-in a Buffer.
 
 
 ## License

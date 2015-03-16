@@ -1,14 +1,13 @@
-declare function linez(text: string): linez.Document;
+declare function linez(contents: string): linez.Document;
+declare function linez(buffer: Buffer): linez.Document;
 declare module linez {
     class Document {
-        private static boms;
-        private static charsets;
-        private bom;
+        bom: Buffer;
         private _charset;
         charset: string;
+        private contents;
         lines: Line[];
         constructor(lines?: Line[]);
-        private detectCharset();
         toString(): string;
     }
     interface Line {

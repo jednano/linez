@@ -2,7 +2,57 @@
 
 var lineEndingFinder: StringFinder;
 
-function linez(text: string) {
+// ReSharper disable RedundantQualifier
+function linez(contents: string): linez.Document;
+function linez(buffer: Buffer): linez.Document;
+function linez(file: string|Buffer): linez.Document {
+	// ReSharper restore RedundantQualifier
+	if (typeof file === 'string') {
+		return new linez.Document(parseLines(file));
+	}
+	var buffer = <Buffer>file;
+	var doc = new linez.Document();
+	doc.charset = detectCharset(buffer);
+	var bom = boms[doc.charset];
+	switch (doc.charset) {
+		case 'utf-8-bom':
+		case 'utf-16le':
+			var encoding = doc.charset.replace(/-/g, '').replace(/bom$/, '');
+			doc.lines = parseLines(buffer.slice(bom.length).toString(encoding));
+			break;
+		case 'utf-16be':
+		case 'utf-32le':
+		case 'utf-32be':
+			// TODO: Properly decode these charsets
+			throw new Error('Decoding ' + doc.charset + ' charset not yet supported');
+		default:
+			doc.lines = parseLines(buffer.toString('utf8'));
+			break;
+	}
+	return doc;
+}
+
+function detectCharset(buffer: Buffer) {
+	var bomKeys = Object.keys(boms);
+	for (var i = 0; i < bomKeys.length; i++) {
+		var charset = bomKeys[i];
+		var bom = boms[charset];
+		if ((<any>buffer.slice(0, bom.length)).equals(bom)) {
+			return charset;
+		}
+	}
+	return '';
+}
+
+var boms: { [key: string]: Buffer } = {
+	'utf-8-bom': new Buffer([0xef, 0xbb, 0xbf]),
+	'utf-16be': new Buffer([0xfe, 0xff]),
+	'utf-32le': new Buffer([0xff, 0xfe, 0x00, 0x00]),
+	'utf-16le': new Buffer([0xff, 0xfe]),
+	'utf-32be': new Buffer([0x00, 0x00, 0xfe, 0xff])
+};
+
+function parseLines(text: string) {
 	// ReSharper disable once RedundantQualifier
 	var lines: linez.Line[] = [];
 	var lineNumber = 1;
@@ -24,7 +74,7 @@ function linez(text: string) {
 			ending: ''
 		});
 	}
-	return new linez.Document(lines);
+	return lines;
 }
 
 // ReSharper disable once InconsistentNaming
@@ -32,23 +82,9 @@ module linez {
 
 	export class Document {
 
-		private static boms = {
-			'\u00EF\u00BB\u00BF': 'utf-8-bom',
-			'\u00FE\u00FF': 'utf-16be',
-			'\u00FF\u00FE\u0000\u0000': 'utf-32le',
-			'\u00FF\u00FE': 'utf-16le',
-			'\u0000\u0000\u00FE\u00FF': 'utf-32be'
-		};
-
-		private static charsets = {
-			'utf-8-bom': '\u00EF\u00BB\u00BF',
-			'utf-16be': '\u00FE\u00FF',
-			'utf-32le': '\u00FF\u00FE\u0000\u0000',
-			'utf-16le': '\u00FF\u00FE',
-			'utf-32be': '\u0000\u0000\u00FE\u00FF'
-		};
-
-		private bom = '';
+		get bom() {
+			return boms[this.charset];
+		}
 
 		private _charset = '';
 
@@ -57,35 +93,19 @@ module linez {
 		}
 
 		set charset(value: string) {
-			this.bom = Document.charsets[value] || '';
 			this._charset = value || '';
 		}
+
+		private contents: string;
 
 		lines: Line[];
 
 		constructor(lines?: Line[]) {
 			this.lines = lines || [];
-			this.detectCharset();
-		}
-
-		private detectCharset() {
-			var firstLine = this.lines[0];
-			if (!firstLine) {
-				return;
-			}
-			var boms = Object.keys(Document.boms);
-			for (var i = 0; i < boms.length; i++) {
-				var bom = boms[i];
-				if (firstLine.text.slice(0, bom.length) === bom) {
-					this.charset = Document.boms[bom];
-					firstLine.text = firstLine.text.substr(bom.length);
-					break;
-				}
-			}
 		}
 
 		toString() {
-			return this.bom + this.lines.map(line => {
+			return this.lines.map(line => {
 				return line.text + line.ending;
 			}).join('');
 		}
