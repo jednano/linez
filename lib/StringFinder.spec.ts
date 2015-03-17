@@ -8,19 +8,18 @@ describe('StringFinder',() => {
 	describe('constructor', () => {
 
 		it('requires a string[] or Regex in the constructor', () => {
-			var fn = () => {
-				new StringFinder(/foo/);
-				new StringFinder(['foo', 'bar']);
-			};
-			expect(fn).not.to.throw;
-			fn = () => {
-				new StringFinder(void(0));
-			};
-			expect(fn).to.throw('Unexpected type in StringFinder constructor argument: undefined');
-			fn = () => {
-				new StringFinder(<any>2);
-			};
-			expect(fn).to.throw('Unexpected type in StringFinder constructor argument: number');
+			expect(() => {
+				return [
+					new StringFinder(/foo/),
+					new StringFinder(['foo', 'bar'])
+				];
+			}).not.to.throw;
+			expect(() => { new StringFinder(void (0)); }).to.throw(
+				'Unexpected type in StringFinder constructor argument: undefined'
+			);
+			expect(() => { new StringFinder(<any>2); }).to.throw(
+				'Unexpected type in StringFinder constructor argument: number'
+			);
 		});
 
 		it('requires regular expression to have the global flag', () => {

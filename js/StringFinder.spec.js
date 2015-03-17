@@ -5,19 +5,18 @@ var StringFinder = require('./StringFinder');
 describe('StringFinder', function () {
     describe('constructor', function () {
         it('requires a string[] or Regex in the constructor', function () {
-            var fn = function () {
-                new StringFinder(/foo/);
-                new StringFinder(['foo', 'bar']);
-            };
-            expect(fn).not.to.throw;
-            fn = function () {
+            expect(function () {
+                return [
+                    new StringFinder(/foo/),
+                    new StringFinder(['foo', 'bar'])
+                ];
+            }).not.to.throw;
+            expect(function () {
                 new StringFinder(void (0));
-            };
-            expect(fn).to.throw('Unexpected type in StringFinder constructor argument: undefined');
-            fn = function () {
+            }).to.throw('Unexpected type in StringFinder constructor argument: undefined');
+            expect(function () {
                 new StringFinder(2);
-            };
-            expect(fn).to.throw('Unexpected type in StringFinder constructor argument: number');
+            }).to.throw('Unexpected type in StringFinder constructor argument: number');
         });
         it('requires regular expression to have the global flag', function () {
             var fn = function () {
