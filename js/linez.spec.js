@@ -9,7 +9,7 @@ describe('linez', function () {
         var line = linez('').lines[0];
         expect(line.offset).to.eq(0);
         expect(line.number).to.eq(1);
-        expect(line.text).to.eq('');
+        expect(line.text).to.be.empty;
         expect(line.ending).to.be.empty;
     });
     it('parses a single line with no line ending', function () {
@@ -97,11 +97,22 @@ describe('linez', function () {
             var doc = linez(contents);
             expect(doc.toBuffer().equals(contents)).to.be.true;
         });
-        it('converts doc into a string with toString()', function () {
+        it('converts a signed doc into a buffer with toBuffer()', function () {
+            var contents = new Buffer('foo', 'utf8');
+            var doc = linez(contents);
+            expect(doc.toBuffer().equals(contents)).to.be.true;
+        });
+        it('converts an unsigned doc into a string with toString()', function () {
             var contents = 'foo\nbar';
             var doc = linez(contents);
             expect(doc + '').to.eq(contents);
             expect(new linez.Document() + '').to.be.empty;
+        });
+        it('throws when trying to set an unsupported charset', function () {
+            var fn = function () {
+                new linez.Document().charset = 'foo';
+            };
+            expect(fn).to.throw('Unsupported charset: foo');
         });
         describe('byte order marks', function () {
             it('detects and decodes a utf-8-bom document', function () {
@@ -128,17 +139,22 @@ describe('linez', function () {
                 expect(doc.charset).to.eq('utf-16be');
                 expect(doc.lines[0].text).to.eq('foo');
             });
-            it('throws a not supported error for utf-32le bom', function () {
+            it('throws an unsupported charset error for utf-32le bom', function () {
                 var fn = function () {
                     linez(new Buffer([0xff, 0xfe, 0x00, 0x00]));
                 };
-                expect(fn).to.throw('Decoding utf-32le charset not yet supported');
+                expect(fn).to.throw('Unsupported charset: utf-32le');
             });
-            it('throws a not supported error for utf-32be bom', function () {
+            it('throws an unsupported charset error for utf-32be bom', function () {
                 var fn = function () {
                     linez(new Buffer([0x00, 0x00, 0xfe, 0xff]));
                 };
-                expect(fn).to.throw('Decoding utf-32be charset not yet supported');
+                expect(fn).to.throw('Unsupported charset: utf-32be');
+            });
+            it('decodes unsigned docs as utf8 by default', function () {
+                var doc = linez(new Buffer('foo', 'utf8'));
+                expect(doc.charset).to.be.empty;
+                expect(doc.lines[0].text).to.eq('foo');
             });
         });
     });

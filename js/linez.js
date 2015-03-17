@@ -2,6 +2,13 @@ var iconv = require('iconv-lite');
 var StringFinder = require('./StringFinder');
 var lineEndingFinder;
 iconv.extendNodeEncodings();
+var boms = {
+    'utf-8-bom': new Buffer([0xef, 0xbb, 0xbf]),
+    'utf-16be': new Buffer([0xfe, 0xff]),
+    'utf-32le': new Buffer([0xff, 0xfe, 0x00, 0x00]),
+    'utf-16le': new Buffer([0xff, 0xfe]),
+    'utf-32be': new Buffer([0x00, 0x00, 0xfe, 0xff])
+};
 function linez(file) {
     // ReSharper restore RedundantQualifier
     if (typeof file === 'string') {
@@ -11,19 +18,12 @@ function linez(file) {
     var doc = new linez.Document();
     doc.charset = detectCharset(buffer);
     var bom = boms[doc.charset];
-    switch (doc.charset) {
-        case 'utf-8-bom':
-        case 'utf-16le':
-        case 'utf-16be':
-            var encoding = doc.charset.replace(/bom$/, '');
-            doc.lines = parseLines(buffer.slice(bom.length).toString(encoding));
-            break;
-        case 'utf-32le':
-        case 'utf-32be':
-            throw new Error('Decoding ' + doc.charset + ' charset not yet supported');
-        default:
-            doc.lines = parseLines(buffer.toString('utf8'));
-            break;
+    var encoding = doc.charset.replace(/bom$/, '');
+    if (Buffer.isEncoding(encoding)) {
+        doc.lines = parseLines(buffer.slice(bom.length).toString(encoding));
+    }
+    else {
+        doc.lines = parseLines(buffer.toString('utf8'));
     }
     return doc;
 }
@@ -38,13 +38,6 @@ function detectCharset(buffer) {
     }
     return '';
 }
-var boms = {
-    'utf-8-bom': new Buffer([0xef, 0xbb, 0xbf]),
-    'utf-16be': new Buffer([0xfe, 0xff]),
-    'utf-32le': new Buffer([0xff, 0xfe, 0x00, 0x00]),
-    'utf-16le': new Buffer([0xff, 0xfe]),
-    'utf-32be': new Buffer([0x00, 0x00, 0xfe, 0xff])
-};
 function parseLines(text) {
     // ReSharper disable once RedundantQualifier
     var lines = [];
@@ -89,7 +82,14 @@ var linez;
                 return this._charset;
             },
             set: function (value) {
-                this._charset = value || '';
+                if (!value) {
+                    this._charset = '';
+                    return;
+                }
+                if (!Buffer.isEncoding(value.replace(/-bom$/, ''))) {
+                    throw new Error('Unsupported charset: ' + value);
+                }
+                this._charset = value;
             },
             enumerable: true,
             configurable: true

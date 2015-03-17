@@ -5,6 +5,14 @@ import StringFinder = require('./StringFinder');
 var lineEndingFinder: StringFinder;
 iconv.extendNodeEncodings();
 
+var boms: { [key: string]: Buffer } = {
+	'utf-8-bom': new Buffer([0xef, 0xbb, 0xbf]),
+	'utf-16be': new Buffer([0xfe, 0xff]),
+	'utf-32le': new Buffer([0xff, 0xfe, 0x00, 0x00]),
+	'utf-16le': new Buffer([0xff, 0xfe]),
+	'utf-32be': new Buffer([0x00, 0x00, 0xfe, 0xff])
+};
+
 // ReSharper disable RedundantQualifier
 function linez(contents: string): linez.Document;
 function linez(buffer: Buffer): linez.Document;
@@ -17,20 +25,11 @@ function linez(file: string|Buffer): linez.Document {
 	var doc = new linez.Document();
 	doc.charset = detectCharset(buffer);
 	var bom = boms[doc.charset];
-	switch (doc.charset) {
-		case 'utf-8-bom':
-		case 'utf-16le':
-		case 'utf-16be':
-			var encoding = doc.charset.replace(/bom$/, '');
-			doc.lines = parseLines(buffer.slice(bom.length).toString(encoding));
-			break;
-		case 'utf-32le':
-		case 'utf-32be':
-			// TODO: Properly decode these charsets
-			throw new Error('Decoding ' + doc.charset + ' charset not yet supported');
-		default:
-			doc.lines = parseLines(buffer.toString('utf8'));
-			break;
+	var encoding = doc.charset.replace(/bom$/, '');
+	if ((<any>Buffer).isEncoding(encoding)) {
+		doc.lines = parseLines(buffer.slice(bom.length).toString(encoding));
+	} else {
+		doc.lines = parseLines(buffer.toString('utf8'));
 	}
 	return doc;
 }
@@ -46,14 +45,6 @@ function detectCharset(buffer: Buffer) {
 	}
 	return '';
 }
-
-var boms: { [key: string]: Buffer } = {
-	'utf-8-bom': new Buffer([0xef, 0xbb, 0xbf]),
-	'utf-16be': new Buffer([0xfe, 0xff]),
-	'utf-32le': new Buffer([0xff, 0xfe, 0x00, 0x00]),
-	'utf-16le': new Buffer([0xff, 0xfe]),
-	'utf-32be': new Buffer([0x00, 0x00, 0xfe, 0xff])
-};
 
 function parseLines(text: string) {
 	// ReSharper disable once RedundantQualifier
@@ -96,7 +87,14 @@ module linez {
 		}
 
 		set charset(value: string) {
-			this._charset = value || '';
+			if (!value) {
+				this._charset = '';
+				return;
+			}
+			if (!(<any>Buffer).isEncoding(value.replace(/-bom$/, ''))) {
+				throw new Error('Unsupported charset: ' + value);
+			}
+			this._charset = value;
 		}
 
 		private contents: string;
