@@ -1,6 +1,6 @@
 {
   "name": "linez",
-  "version": "3.2.1",
+  "version": "4.0.0",
   "author": "Jed Mao <jedmao@outlook.com>",
   "description": "Parses lines from text, preserving line numbers, offsets and line endings.",
   "keywords": [
