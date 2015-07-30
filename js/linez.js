@@ -1,4 +1,5 @@
 var iconv = require('iconv-lite');
+var bufferEquals = require('buffer-equals');
 var StringFinder = require('./StringFinder');
 var lineEndingFinder;
 iconv.extendNodeEncodings();
@@ -32,7 +33,7 @@ function detectCharset(buffer) {
     for (var i = 0; i < bomKeys.length; i++) {
         var charset = bomKeys[i];
         var bom = boms[charset];
-        if (buffer.slice(0, bom.length).equals(bom)) {
+        if (bufferEquals(buffer.slice(0, bom.length), bom)) {
             return charset;
         }
     }

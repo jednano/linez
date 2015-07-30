@@ -1,4 +1,5 @@
 ﻿var iconv = require('iconv-lite');
+var bufferEquals = require('buffer-equals');
 
 import StringFinder = require('./StringFinder');
 
@@ -39,7 +40,7 @@ function detectCharset(buffer: Buffer) {
 	for (var i = 0; i < bomKeys.length; i++) {
 		var charset = bomKeys[i];
 		var bom = boms[charset];
-		if ((<any>buffer.slice(0, bom.length)).equals(bom)) {
+		if (bufferEquals(<any>buffer.slice(0, bom.length), bom)) {
 			return charset;
 		}
 	}
