@@ -40,7 +40,7 @@ function detectCharset(buffer: Buffer) {
 	for (var i = 0; i < bomKeys.length; i++) {
 		var charset = bomKeys[i];
 		var bom = boms[charset];
-		if (bufferEquals(<any>buffer.slice(0, bom.length), bom)) {
+		if (bufferEquals(buffer.slice(0, bom.length), bom)) {
 			return charset;
 		}
 	}

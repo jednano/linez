@@ -1,4 +1,5 @@
 ﻿var iconv = require('iconv-lite');
+var bufferEquals = require('buffer-equals');
 
 import sinonChai = require('./test-common');
 import linez = require('./linez');
@@ -112,13 +113,13 @@ describe('linez', () => {
 				new Buffer('foo', 'utf8')
 			]);
 			var doc = linez(contents);
-			expect((<any>doc.toBuffer()).equals(contents)).to.be.true;
+			expect(bufferEquals(doc.toBuffer(), contents)).to.be.true;
 		});
 
 		it('converts a signed doc into a buffer with toBuffer()', () => {
 			var contents = new Buffer('foo', 'utf8');
 			var doc = linez(contents);
-			expect((<any>doc.toBuffer()).equals(contents)).to.be.true;
+			expect(bufferEquals(doc.toBuffer(), contents)).to.be.true;
 		});
 
 		it('converts an unsigned doc into a string with toString()', () => {
