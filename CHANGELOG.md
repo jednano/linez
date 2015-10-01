@@ -1,3 +1,6 @@
+## 4.1.1
+- Pin iconv-lite version.
+
 ## 4.1.0
 - Support Node 0.10 with [buffer-equals](https://www.npmjs.com/package/buffer-equals).
 
