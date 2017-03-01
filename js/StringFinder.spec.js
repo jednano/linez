@@ -1,3 +1,4 @@
+"use strict";
 var sinonChai = require('./test-common');
 var expect = sinonChai.expect;
 var StringFinder = require('./StringFinder');
@@ -11,12 +12,8 @@ describe('StringFinder', function () {
                     new StringFinder(['foo', 'bar'])
                 ];
             }).not.to.throw;
-            expect(function () {
-                new StringFinder(void (0));
-            }).to.throw('Unexpected type in StringFinder constructor argument: undefined');
-            expect(function () {
-                new StringFinder(2);
-            }).to.throw('Unexpected type in StringFinder constructor argument: number');
+            expect(function () { new StringFinder(void (0)); }).to.throw('Unexpected type in StringFinder constructor argument: undefined');
+            expect(function () { new StringFinder(2); }).to.throw('Unexpected type in StringFinder constructor argument: number');
         });
         it('requires regular expression to have the global flag', function () {
             var fn = function () {

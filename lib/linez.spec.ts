@@ -5,7 +5,6 @@ import sinonChai = require('./test-common');
 import linez = require('./linez');
 
 var expect = sinonChai.expect;
-iconv.extendNodeEncodings();
 
 // ReSharper disable WrongExpressionStatement
 describe('linez', () => {
@@ -110,14 +109,14 @@ describe('linez', () => {
 		it('converts doc into a buffer with toBuffer()', () => {
 			var contents = Buffer.concat([
 				new Buffer([0xef, 0xbb, 0xbf]),
-				new Buffer('foo', 'utf8')
+				new Buffer('foo')
 			]);
 			var doc = linez(contents);
 			expect(bufferEquals(doc.toBuffer(), contents)).to.be.true;
 		});
 
 		it('converts a signed doc into a buffer with toBuffer()', () => {
-			var contents = new Buffer('foo', 'utf8');
+			var contents = new Buffer('foo');
 			var doc = linez(contents);
 			expect(bufferEquals(doc.toBuffer(), contents)).to.be.true;
 		});
@@ -141,7 +140,7 @@ describe('linez', () => {
 			it('detects and decodes a utf-8-bom document', () => {
 				var doc = linez(Buffer.concat([
 					new Buffer([0xef, 0xbb, 0xbf]),
-					new Buffer('foo', 'utf8')
+					new Buffer('foo')
 				]));
 				expect(doc.charset).to.eq('utf-8-bom');
 				expect(doc.lines[0].text).to.eq('foo');
@@ -150,7 +149,7 @@ describe('linez', () => {
 			it('detects and decodes utf-16le bom document', () => {
 				var doc = linez(Buffer.concat([
 					new Buffer([0xff, 0xfe]),
-					new Buffer('foo', 'utf16le')
+					iconv.encode('foo', 'utf16le')
 				]));
 				expect(doc.charset).to.eq('utf-16le');
 				expect(doc.lines[0].text).to.eq('foo');
@@ -159,7 +158,7 @@ describe('linez', () => {
 			it('detects and decodes utf-16be bom document', () => {
 				var doc = linez(Buffer.concat([
 					new Buffer([0xfe, 0xff]),
-					new Buffer('foo', 'utf16be')
+					iconv.encode('foo', 'utf16be')
 				]));
 				expect(doc.charset).to.eq('utf-16be');
 				expect(doc.lines[0].text).to.eq('foo');
@@ -180,12 +179,11 @@ describe('linez', () => {
 			});
 
 			it('decodes unsigned docs as utf8 by default', () => {
-				var doc = linez(new Buffer('foo', 'utf8'));
+				var doc = linez(new Buffer('foo'));
 				expect(doc.charset).to.be.empty;
 				expect(doc.lines[0].text).to.eq('foo');
 			});
 
 		});
 	});
-
 });
