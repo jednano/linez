@@ -41,6 +41,6 @@
   },
   "dependencies": {
     "buffer-equals": "^1.0.3",
-    "iconv-lite": "0.4.11"
+    "iconv-lite": "^0.4.15"
   }
 }

@@ -1,3 +1,4 @@
+"use strict";
 var iconv = require('iconv-lite');
 var bufferEquals = require('buffer-equals');
 var StringFinder = require('./StringFinder');
@@ -20,8 +21,8 @@ function linez(file) {
     doc.charset = detectCharset(buffer);
     var bom = boms[doc.charset];
     var encoding = doc.charset.replace(/bom$/, '');
-    if (Buffer.isEncoding(encoding)) {
-        doc.lines = parseLines(buffer.slice(bom.length).toString(encoding));
+    if (iconv.encodingExists(encoding)) {
+        doc.lines = parseLines(iconv.decode(buffer.slice(bom.length), encoding));
     }
     else {
         doc.lines = parseLines(buffer.toString('utf8'));
@@ -87,7 +88,7 @@ var linez;
                     this._charset = '';
                     return;
                 }
-                if (!Buffer.isEncoding(value.replace(/-bom$/, ''))) {
+                if (!iconv.encodingExists(value.replace(/-bom$/, ''))) {
                     throw new Error('Unsupported charset: ' + value);
                 }
                 this._charset = value;
@@ -97,9 +98,15 @@ var linez;
         });
         Document.prototype.toBuffer = function () {
             var charset = this.charset.replace(/-bom$/, '');
-            var contents = new Buffer(this.toString(), charset);
+            var contents;
+            if (iconv.encodingExists(charset)) {
+                contents = iconv.encode(this.toString(), charset);
+            }
+            else {
+                contents = new Buffer(this.toString());
+            }
             if (this.bom) {
-                return Buffer.concat([this.bom, contents]);
+                contents = Buffer.concat([this.bom, contents]);
             }
             return contents;
         };
@@ -109,7 +116,7 @@ var linez;
             }).join('');
         };
         return Document;
-    })();
+    }());
     linez.Document = Document;
     function configure(options) {
         if (!options) {

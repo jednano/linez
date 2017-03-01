@@ -1,3 +1,4 @@
+"use strict";
 var StringFinder = (function () {
     function StringFinder(needles) {
         if (needles instanceof RegExp) {
@@ -34,5 +35,5 @@ var StringFinder = (function () {
         return matches;
     };
     return StringFinder;
-})();
+}());
 module.exports = StringFinder;

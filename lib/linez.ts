@@ -4,7 +4,6 @@ var bufferEquals = require('buffer-equals');
 import StringFinder = require('./StringFinder');
 
 var lineEndingFinder: StringFinder;
-iconv.extendNodeEncodings();
 
 var boms: { [key: string]: Buffer } = {
 	'utf-8-bom': new Buffer([0xef, 0xbb, 0xbf]),
@@ -27,8 +26,8 @@ function linez(file: string|Buffer): linez.Document {
 	doc.charset = detectCharset(buffer);
 	var bom = boms[doc.charset];
 	var encoding = doc.charset.replace(/bom$/, '');
-	if ((<any>Buffer).isEncoding(encoding)) {
-		doc.lines = parseLines(buffer.slice(bom.length).toString(encoding));
+	if (iconv.encodingExists(encoding)) {
+		doc.lines = parseLines(iconv.decode(buffer.slice(bom.length), encoding));
 	} else {
 		doc.lines = parseLines(buffer.toString('utf8'));
 	}
@@ -92,7 +91,7 @@ module linez {
 				this._charset = '';
 				return;
 			}
-			if (!(<any>Buffer).isEncoding(value.replace(/-bom$/, ''))) {
+			if (!iconv.encodingExists(value.replace(/-bom$/, ''))) {
 				throw new Error('Unsupported charset: ' + value);
 			}
 			this._charset = value;
@@ -108,9 +107,14 @@ module linez {
 
 		toBuffer() {
 			var charset = this.charset.replace(/-bom$/, '');
-			var contents = new Buffer(this.toString(), charset);
+			var contents: Buffer;
+			if (iconv.encodingExists(charset)) {
+				contents = iconv.encode(this.toString(), charset);
+			} else {
+				contents = new Buffer(this.toString());
+			}
 			if (this.bom) {
-				return Buffer.concat([this.bom, contents]);
+				contents = Buffer.concat([this.bom, contents]);
 			}
 			return contents;
 		}
