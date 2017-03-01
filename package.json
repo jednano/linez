@@ -40,7 +40,7 @@
     "through2": "^0.6.3"
   },
   "dependencies": {
-    "buffer-equals": "^1.0.3",
+    "buffer-equals": "^1.0.4",
     "iconv-lite": "^0.4.15"
   }
 }
