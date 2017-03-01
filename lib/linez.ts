@@ -1,7 +1,7 @@
-﻿var iconv = require('iconv-lite');
-var bufferEquals = require('buffer-equals');
+﻿import * as iconv from 'iconv-lite';
+import * as bufferEquals from 'buffer-equals';
 
-import StringFinder = require('./StringFinder');
+import StringFinder from './StringFinder';
 
 var lineEndingFinder: StringFinder;
 
@@ -13,11 +13,9 @@ var boms: { [key: string]: Buffer } = {
 	'utf-32be': new Buffer([0x00, 0x00, 0xfe, 0xff])
 };
 
-// ReSharper disable RedundantQualifier
 function linez(contents: string): linez.Document;
 function linez(buffer: Buffer): linez.Document;
 function linez(file: string|Buffer): linez.Document {
-	// ReSharper restore RedundantQualifier
 	if (typeof file === 'string') {
 		return new linez.Document(parseLines(file));
 	}
@@ -47,7 +45,6 @@ function detectCharset(buffer: Buffer) {
 }
 
 function parseLines(text: string) {
-	// ReSharper disable once RedundantQualifier
 	var lines: linez.Line[] = [];
 	var lineNumber = 1;
 	var lineOffset = 0;
@@ -71,8 +68,7 @@ function parseLines(text: string) {
 	return lines;
 }
 
-// ReSharper disable once InconsistentNaming
-module linez {
+namespace linez {
 
 	export class Document {
 
@@ -96,8 +92,6 @@ module linez {
 			}
 			this._charset = value;
 		}
-
-		private contents: string;
 
 		lines: Line[];
 
@@ -141,7 +135,6 @@ module linez {
 		if (!options) {
 			throw new Error('No configuration options to configure');
 		}
-		/* istanbul ignore else */
 		if (options.newlines) {
 			lineEndingFinder = new StringFinder(options.newlines);
 		}
@@ -155,4 +148,4 @@ module linez {
 
 linez.resetConfiguration();
 
-export = linez;
+export default linez;

@@ -1,12 +1,9 @@
 ﻿var iconv = require('iconv-lite');
 var bufferEquals = require('buffer-equals');
 
-import sinonChai = require('./test-common');
-import linez = require('./linez');
+import { expect } from './test-common';
+import linez from './linez';
 
-var expect = sinonChai.expect;
-
-// ReSharper disable WrongExpressionStatement
 describe('linez', () => {
 
 	it('parses empty text', () => {

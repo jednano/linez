@@ -4,19 +4,14 @@ node_js:
   - stable
   - 6
   - 4
-  - 0
 
 sudo: false
+
+after_success:
+  - npm install codecov
+  - npm run codecov
 
 notifications:
   email:
     on_success: change
     on_failure: always
-
-after_success:
-  - npm install -g codeclimate-test-reporter
-  - codeclimate < coverage/lcov.info
-
-addons:
-  code_climate:
-    repo_token: c98fd47620dd167e7b6fd2024304533fa569024d92f70136fa2399816aa6574c

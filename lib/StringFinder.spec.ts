@@ -1,8 +1,6 @@
-﻿import sinonChai = require('./test-common');
-var expect = sinonChai.expect;
-import StringFinder = require('./StringFinder');
+﻿import { expect } from './test-common';
+import StringFinder from './StringFinder';
 
-// ReSharper disable WrongExpressionStatement
 describe('StringFinder',() => {
 
 	describe('constructor', () => {
