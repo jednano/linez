@@ -1,4 +1,4 @@
-﻿class StringFinder {
+﻿export default class StringFinder {
 
 	private newlinesRegex: RegExp;
 
@@ -42,5 +42,3 @@
 		return matches;
 	}
 }
-
-export = StringFinder;

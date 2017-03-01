@@ -11,9 +11,39 @@
     "newline",
     "ending"
   ],
-  "main": "js/linez.js",
+  "main": "dist/linez.js",
+  "types": "dist/linez.d.ts",
   "scripts": {
-    "test": "gulp test"
+    "clean": "rimraf coverage dist *.log",
+    "codecov": "codecov -f coverage/lcov.info",
+    "compile": "tsc",
+    "compile:watch": "tsc --watch",
+    "lint": "npm run tslint",
+    "mocha": "mocha dist/**/*.spec.js",
+    "prepublish": "npm test",
+    "pretest": "npm run lint && npm run clean && npm run compile",
+    "test": "nyc npm run mocha -- --reporter lcov --reporter spec",
+    "test:watch": "npm run mocha -- --watch --reporter min",
+    "tslint": "tslint --project tsconfig.json"
+  },
+  "nyc": {
+    "lines": 100,
+    "statements": 100,
+    "functions": 100,
+    "branches": 94.12,
+    "include": [
+      "dist/**/*.js"
+    ],
+    "exclude": [
+      "dist/**/*.spec.js"
+    ],
+    "reporter": [
+      "lcov",
+      "text"
+    ],
+    "cache": true,
+    "all": true,
+    "check-coverage": true
   },
   "repository": {
     "type": "git",
@@ -25,19 +55,20 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "chai": "^2.1.1",
-    "del": "^1.1.1",
-    "event-stream": "^3.3.0",
-    "gulp": "^3.8.11",
-    "gulp-istanbul": "^0.6.0",
-    "gulp-mocha": "^2.0.0",
-    "gulp-plumber": "^1.0.0",
-    "gulp-tslint": "^1.4.3",
-    "gulp-typescript": "^2.4.2",
-    "mocha": "^2.2.1",
-    "sinon": "^1.13.0",
-    "sinon-chai": "^2.7.0",
-    "through2": "^0.6.3"
+    "@types/chai": "^3.4.35",
+    "@types/mocha": "^2.2.39",
+    "@types/node": "^7.0.5",
+    "@types/sinon": "^1.16.35",
+    "@types/sinon-chai": "^2.7.27",
+    "chai": "^2.3.0",
+    "mocha": "^2.5.3",
+    "nyc": "^10.1.2",
+    "rimraf": "^2.6.1",
+    "sinon": "^1.17.7",
+    "sinon-chai": "^2.8.0",
+    "ts-node": "^2.1.0",
+    "tslint": "^4.5.1",
+    "typescript": "^2.2.1"
   },
   "dependencies": {
     "buffer-equals": "^1.0.4",
