@@ -1,3 +1,6 @@
+## 4.1.2
+- Fix Node v4 compatibility ([#16](https://github.com/jedmao/linez/pull/16)).
+
 ## 4.1.1
 - Pin iconv-lite version.
 
