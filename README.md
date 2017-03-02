@@ -21,8 +21,7 @@ $ npm install linez
 ### TypeScript Usage
 
 ```ts
-/// <reference path="node_modules/linez/linez.d.ts" />
-import linez = require('linez');
+import linez from 'linez';
 ```
 
 ### JavaScript Usage

@@ -1,3 +1,6 @@
+## 4.1.3
+- Update README on TypeScript usage.
+
 ## 4.1.2
 - Fix Node v4 compatibility ([#16](https://github.com/jedmao/linez/pull/16)).
 
