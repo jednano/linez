@@ -18,18 +18,25 @@
 $ npm install linez
 ```
 
-### TypeScript Usage
+### Importing
+
+#### TypeScript
 
 ```ts
+import * as linez from 'linez';
+```
+
+#### Babel/ES6+
+
+```js
 import linez from 'linez';
 ```
 
-### JavaScript Usage
+#### JavaScript
 
 ```js
 var linez = require('linez');
 ```
-
 
 ## Introduction
 
