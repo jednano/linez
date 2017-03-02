@@ -1,3 +1,6 @@
+## 4.1.4
+- Fix module export.
+
 ## 4.1.3
 - Update README on TypeScript usage.
 

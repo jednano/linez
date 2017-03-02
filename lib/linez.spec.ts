@@ -2,7 +2,7 @@
 var bufferEquals = require('buffer-equals');
 
 import { expect } from './test-common';
-import linez from './linez';
+import * as linez from './linez';
 
 describe('linez', () => {
 

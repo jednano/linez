@@ -148,4 +148,4 @@ namespace linez {
 
 linez.resetConfiguration();
 
-export default linez;
+export = linez;
