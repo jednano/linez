@@ -3,7 +3,6 @@
     "class-name": true,
     "curly": true,
     "eofline": true,
-    "forin": true,
     "label-position": true,
     "max-line-length": [true, 120],
     "no-arg": true,
@@ -30,7 +29,8 @@
     ],
     "quotemark": [false],
     "radix": true,
-    "semicolon": [true,
+    "semicolon": [
+      true,
       "always"
     ],
     "triple-equals": [true, "allow-null-check"],

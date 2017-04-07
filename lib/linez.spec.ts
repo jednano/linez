@@ -78,11 +78,27 @@ describe('linez', () => {
 			expect(lines[3].ending).to.be.empty;
 		});
 
-		it('errors when no configuration options are sent', () => {
-			var fn = () => {
-				linez.configure(void (0));
-			};
-			expect(fn).to.throw('No configuration options to configure');
+		it('get curr default options', () => {
+			var options = linez.configure();
+			expect(options.newlines.global).to.be.true;
+			expect(options.newlines.source).to.eq('\\r?\\n');
+		});
+	});
+
+	describe('local configure',() => {
+		it('supports a custom newlines string array', () => {
+			var lines = linez('foo\rbar\tbaz\u0085qux\n', {
+				newlines: ['\t', '\u0085', '\r'],
+				blocks: null,
+			}).lines;
+			expect(lines[0].text).to.eq('foo');
+			expect(lines[0].ending).to.eq('\r');
+			expect(lines[1].text).to.eq('bar');
+			expect(lines[1].ending).to.eq('\t');
+			expect(lines[2].text).to.eq('baz');
+			expect(lines[2].ending).to.eq('\u0085');
+			expect(lines[3].text).to.eq('qux\n');
+			expect(lines[3].ending).to.be.empty;
 		});
 	});
 
@@ -179,6 +195,157 @@ describe('linez', () => {
 				var doc = linez(new Buffer('foo'));
 				expect(doc.charset).to.be.empty;
 				expect(doc.lines[0].text).to.eq('foo');
+			});
+
+		});
+
+		describe('code block support', () => {
+
+			it('multiline comments api', () => {
+				var doc = linez([
+					'foo',
+					'/**',
+					' * foo',
+					' * bar',
+					' */',
+					'bar',
+					'    /*',
+					'     * foo',
+					'     * bar',
+					'     */',
+				].join('\n'));
+				expect(doc.lines[0].text).to.eq('foo');
+				var commentBlock1 = doc.lines[1].block.multilineComment;
+				expect(commentBlock1).to.have.length(4);
+				expect(commentBlock1[0].text).to.eq('/**');
+				expect(commentBlock1[1].text).to.eq(' * foo');
+				expect(commentBlock1[2].text).to.eq(' * bar');
+				expect(commentBlock1[3].text).to.eq(' */');
+				var commentBlock2 = doc.lines[6].block.multilineComment;
+				expect(commentBlock2).to.have.length(4);
+				expect(commentBlock2[0].text).to.eq('    /*');
+				expect(commentBlock2[1].text).to.eq('     * foo');
+				expect(commentBlock2[2].text).to.eq('     * bar');
+				expect(commentBlock2[3].text).to.eq('     */');
+			});
+
+			it('format multiline comments', () => {
+				var doc = linez([
+					'    /**',
+					'    * foo',
+					'    * bar',
+					'    */',
+					'/**',
+					'    * foo',
+					'    * bar',
+					'    */',
+					'*/',
+				].join('\n'));
+				doc.lines.forEach(line => {
+					var multilineComment = line.block.multilineComment;
+					var prefix = "";
+					if (multilineComment) {
+						if (/^(\s+)/.test(line.text)) {
+							prefix = RegExp.$1;
+						}
+						multilineComment.forEach(line => {
+							if (/^\s*\*/.test(line.text)) {
+								line.text = prefix + " " + line.text.trim();
+							}
+						});
+					}
+				});
+
+				expect(doc.toString()).to.eq([
+					'    /**',
+					'     * foo',
+					'     * bar',
+					'     */',
+					'/**',
+					' * foo',
+					' * bar',
+					' */',
+					'*/',
+				].join('\n'));
+			});
+
+			it('format javascript multiline string', () => {
+				var doc = linez([
+					'var foo = "foo \\',
+					'bar \\',
+					'bar";',
+					'var bar = \'foo \\',
+					'bar \\',
+					'bar\';',
+				].join('\n'), {
+					blocks: [
+						{
+							type: 'multilineString',
+							start: /[^\\]".*\\\s*$/,
+							end: /[^\\]";?\s*$/,
+						},
+						{
+							type: 'multilineString',
+							start: /[^\\]'.*\\\s*$/,
+							end: /[^\\]';?\s*$/,
+						}
+					]
+				});
+				doc.lines.forEach(line => {
+					var multilineString = line.block.multilineString;
+					if (multilineString) {
+						multilineString.forEach(line => {
+							line.text = line.text.replace(/\\\s*$/, () => {
+								line.ending = '';
+								return '';
+							});
+						});
+					}
+				});
+				expect(doc.toString()).to.eq([
+					'var foo = "foo bar bar";',
+					'var bar = \'foo bar bar\';',
+				].join('\n'));
+			});
+
+			it('HTML tag test', () => {
+				var doc = linez([
+					'<html>',
+					'<head>',
+					'    <title>foo</title>',
+					'</head>',
+					'<body class="bar">',
+					'    bar',
+					'</body>',
+					'</html>',
+				].join('\n'), {
+					blocks: {
+						type: 'htmlHead',
+						start: /^\s*<head\b(?:[^<>]+)?>\s*$/,
+						end: /^\s*<\/head>\s*$/,
+					}
+				});
+				doc.lines.forEach(line => {
+					if (line.block.htmlHead) {
+						line.block.htmlHead.forEach(line => {
+							line.text = line.text.trim();
+						});
+					} else if (line.block.htmlBody) {
+						line.block.htmlBody.forEach(line => {
+							line.text = line.text.replace(/^(?:\t|    )/, "");
+						});
+					}
+				});
+				expect(doc.toString()).to.eq([
+					'<html>',
+					'<head>',
+					'<title>foo</title>',
+					'</head>',
+					'<body class="bar">',
+					'    bar',
+					'</body>',
+					'</html>',
+				].join('\n'));
 			});
 
 		});
