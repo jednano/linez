@@ -1,9 +1,9 @@
 ﻿import * as iconv from 'iconv-lite';
 import * as bufferEquals from 'buffer-equals';
+import objectAssign = require('object-assign');
 import WeakMap = require('es6-weak-map');
 import some = require('lodash.some');
 import StringFinder from './StringFinder';
-var objectAssign = require('object-assign');
 
 var boms: { [key: string]: Buffer } = {
 	'utf-8-bom': new Buffer([0xef, 0xbb, 0xbf]),
