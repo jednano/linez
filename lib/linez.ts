@@ -1,6 +1,7 @@
 ﻿import * as iconv from 'iconv-lite';
 import * as bufferEquals from 'buffer-equals';
 import WeakMap = require('es6-weak-map');
+import some = require('lodash.some');
 import StringFinder from './StringFinder';
 var objectAssign = require('object-assign');
 
@@ -36,13 +37,14 @@ function linez(file: string|Buffer, options?: linez.Options): linez.Document {
 }
 
 function detectCharset(buffer: Buffer) {
-	for (var charset in boms) {
-		var bom = boms[charset];
+	var detectCharset;
+	some(boms, (bom, charset) => {
 		if (bufferEquals(buffer.slice(0, bom.length), bom)) {
+			detectCharset = charset;
 			return charset;
 		}
-	}
-	return '';
+	});
+	return detectCharset || '';
 }
 
 function parseLines(text: string, options: linez.Options) {
