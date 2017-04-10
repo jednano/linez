@@ -1,9 +1,9 @@
 ﻿import * as iconv from 'iconv-lite';
 import * as bufferEquals from 'buffer-equals';
-
+import objectAssign = require('object-assign');
+import WeakMap = require('es6-weak-map');
+import some = require('lodash.some');
 import StringFinder from './StringFinder';
-
-var lineEndingFinder: StringFinder;
 
 var boms: { [key: string]: Buffer } = {
 	'utf-8-bom': new Buffer([0xef, 0xbb, 0xbf]),
@@ -13,11 +13,15 @@ var boms: { [key: string]: Buffer } = {
 	'utf-32be': new Buffer([0x00, 0x00, 0xfe, 0xff])
 };
 
-function linez(contents: string): linez.Document;
-function linez(buffer: Buffer): linez.Document;
-function linez(file: string|Buffer): linez.Document {
+var globalOptions: linez.Options;
+var lineEndingFinderCache = new WeakMap();
+
+function linez(contents: string, options?: linez.Options): linez.Document;
+function linez(buffer: Buffer, options?: linez.Options): linez.Document;
+function linez(file: string|Buffer, options?: linez.Options): linez.Document {
+	options = objectAssign({}, globalOptions, options);
 	if (typeof file === 'string') {
-		return new linez.Document(parseLines(file));
+		return new linez.Document(parseLines(file, options));
 	}
 	var buffer = <Buffer>file;
 	var doc = new linez.Document();
@@ -25,31 +29,36 @@ function linez(file: string|Buffer): linez.Document {
 	var bom = boms[doc.charset];
 	var encoding = doc.charset.replace(/bom$/, '');
 	if (iconv.encodingExists(encoding)) {
-		doc.lines = parseLines(iconv.decode(buffer.slice(bom.length), encoding));
+		doc.lines = parseLines(iconv.decode(buffer.slice(bom.length), encoding), options);
 	} else {
-		doc.lines = parseLines(buffer.toString('utf8'));
+		doc.lines = parseLines(buffer.toString('utf8'), options);
 	}
 	return doc;
 }
 
 function detectCharset(buffer: Buffer) {
-	var bomKeys = Object.keys(boms);
-	for (var i = 0; i < bomKeys.length; i++) {
-		var charset = bomKeys[i];
-		var bom = boms[charset];
+	var detectCharset;
+	some(boms, (bom, charset) => {
 		if (bufferEquals(buffer.slice(0, bom.length), bom)) {
+			detectCharset = charset;
 			return charset;
 		}
-	}
-	return '';
+	});
+	return detectCharset || '';
 }
 
-function parseLines(text: string) {
+function parseLines(text: string, options: linez.Options) {
 	var lines: linez.Line[] = [];
 	var lineNumber = 1;
 	var lineOffset = 0;
+	var lineEndingFinder = lineEndingFinderCache.get(options.newlines);
+	if (!lineEndingFinder) {
+		lineEndingFinder = new StringFinder(options.newlines);
+		lineEndingFinderCache.set(options.newlines, lineEndingFinder);
+	}
 	lineEndingFinder.findAll(text).forEach(lineEnding => {
 		lines.push({
+			block: {},
 			number: lineNumber++,
 			offset: lineOffset,
 			text: text.substring(lineOffset, lineEnding.index),
@@ -59,13 +68,48 @@ function parseLines(text: string) {
 	});
 	if (lineOffset < text.length || text === '') {
 		lines.push({
+			block: {},
 			number: lineNumber,
 			offset: lineOffset,
 			text: text.substr(lineOffset),
 			ending: ''
 		});
 	}
+
+	if (options.blocks) {
+		var blocks = Array.isArray(options.blocks) ? options.blocks : [options.blocks];
+		blocks.forEach((blockOptions: linez.BlockOptions) => {
+			addBlockProp(lines, blockOptions);
+		});
+	}
+
 	return lines;
+}
+
+function testString(str: string, expression: string|RegExp) {
+	if (expression instanceof RegExp) {
+		return expression.test(str);
+	} else {
+		return str.trim() === expression;
+	}
+}
+
+function addBlockProp(lines: linez.Line[], blockOptions: linez.BlockOptions) {
+	var blockLines: linez.Line[]|null;
+
+	lines.forEach((line: linez.Line) => {
+		if (testString(line.text, blockOptions.start)) {
+			blockLines = [line];
+		} else if (testString(line.text, blockOptions.end)) {
+			if (blockLines) {
+				blockLines.push(line);
+				blockLines[0].block[blockOptions.type] = blockLines;
+			}
+			blockLines = null;
+		} else if (blockLines) {
+			blockLines.push(line);
+		}
+	});
 }
 
 namespace linez {
@@ -125,23 +169,33 @@ namespace linez {
 		number: number;
 		text: string;
 		ending: string;
+		block: { [type: string]: Line[] };
 	}
 
 	export interface Options {
-		newlines?: string[];
+		newlines?: string[]|RegExp;
+		blocks?: BlockOptions[]|BlockOptions;
 	}
 
-	export function configure(options: Options) {
-		if (!options) {
-			throw new Error('No configuration options to configure');
-		}
-		if (options.newlines) {
-			lineEndingFinder = new StringFinder(options.newlines);
-		}
+	export interface BlockOptions {
+		type: string;
+		start: string|RegExp;
+		end: string|RegExp;
+	}
+
+	export function configure(options?: Options) {
+		return objectAssign(globalOptions, options);
 	}
 
 	export function resetConfiguration() {
-		lineEndingFinder = new StringFinder(/\r?\n/g);
+		globalOptions = {
+			blocks: {
+				type: 'multilineComment',
+				start: /^\s*\/\*+\s*$/,
+				end: /^\s*\*+\/\s*$/,
+			},
+			newlines: /\r?\n/g,
+		};
 	}
 
 }

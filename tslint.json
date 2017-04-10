@@ -28,9 +28,14 @@
         "check-else",
         "check-whitespace"
     ],
-    "quotemark": [false],
+    "quotemark": [
+      true,
+      "single",
+      "avoid-escape"
+    ],
     "radix": true,
-    "semicolon": [true,
+    "semicolon": [
+      true,
       "always"
     ],
     "triple-equals": [true, "allow-null-check"],

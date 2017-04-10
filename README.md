@@ -97,17 +97,22 @@ By default, the document will attempt to be decoded as utf8. This is the default
 
 ### configure(options: IOptions)
 
-Configures linez to use the supplied options. Currently, only the newlines property is available, where you can specify any number of newline character sequences.
+Set the global configures linez to use the supplied options. you can specify any number of newline character sequences in newlines property, and you can specify any number of code block options in block property.
 
 ```js
 linez.configure({
-  newlines: ['\n', '\r\n', '\r', '\u000B']
+  newlines: ['\n', '\r\n', '\r', '\u000B'],
+	blocks: [{
+		type: "multilineComment",
+		start: /^\s*\/\*+\s*$/,
+		end: /^\s*\*+\/\s*$/,
+	}]
 });
 ```
 
 ### resetConfiguration()
 
-Resets the configuration to the default settings, using `/\r?\n/g` as the newlines regular expression.
+Resets the global configuration to the default settings, using `/\r?\n/g` as the newlines regular expression， useing multiline comments options as code block settings.
 
 
 ### Document
@@ -127,6 +132,7 @@ interface Line {
   number: number;
   text: string;
   ending: string;
+  blocks: { [type: string]: Line[] }[];
 }
 ```
 
@@ -134,12 +140,22 @@ interface Line {
 
 ```ts
 interface Options {
-  newlines?: string[];
+  newlines?: string[]|RegExp;
+  blocks?: BlockOptions[]|BlockOptions;
 }
 ```
 
+### BlockOptions
 
-### linez(file: string|Buffer): Document
+```ts
+interface BlockOptions {
+  type: string;
+  start: RegExp;
+  end: RegExp;
+}
+```
+
+### linez(file: string|Buffer, options?: IOptions): Document
 
 Parses text into a `Document`.
 
