@@ -72,6 +72,7 @@
   },
   "dependencies": {
     "buffer-equals": "^1.0.4",
+    "es6-weak-map": "^2.0.2",
     "iconv-lite": "^0.4.15",
     "object-assign": "^4.1.1"
   }

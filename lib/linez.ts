@@ -1,6 +1,6 @@
 ﻿import * as iconv from 'iconv-lite';
 import * as bufferEquals from 'buffer-equals';
-
+import WeakMap = require('es6-weak-map');
 import StringFinder from './StringFinder';
 var objectAssign = require('object-assign');
 
@@ -13,6 +13,7 @@ var boms: { [key: string]: Buffer } = {
 };
 
 var globalOptions: linez.Options;
+var lineEndingFinderCache = new WeakMap();
 
 function linez(contents: string, options?: linez.Options): linez.Document;
 function linez(buffer: Buffer, options?: linez.Options): linez.Document;
@@ -48,7 +49,11 @@ function parseLines(text: string, options: linez.Options) {
 	var lines: linez.Line[] = [];
 	var lineNumber = 1;
 	var lineOffset = 0;
-	var lineEndingFinder = new StringFinder(options.newlines);
+	var lineEndingFinder = lineEndingFinderCache.get(options.newlines);
+	if (!lineEndingFinder) {
+		lineEndingFinder = new StringFinder(options.newlines);
+		lineEndingFinderCache.set(options.newlines, lineEndingFinder);
+	}
 	lineEndingFinder.findAll(text).forEach(lineEnding => {
 		lines.push({
 			block: {},
@@ -174,11 +179,11 @@ namespace linez {
 
 	export function resetConfiguration() {
 		globalOptions = {
-			blocks: [{
+			blocks: {
 				type: "multilineComment",
 				start: /^\s*\/\*+\s*$/,
 				end: /^\s*\*+\/\s*$/,
-			}],
+			},
 			newlines: /\r?\n/g,
 		};
 	}

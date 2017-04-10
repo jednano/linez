@@ -213,7 +213,24 @@ describe('linez', () => {
 					'     * foo',
 					'     * bar',
 					'     */',
-				].join('\n'));
+					'*/',
+					'var foo = "foo \\',
+					'bar \\',
+					'bar";',
+				].join('\n'), {
+					blocks: [
+						{
+							type: "multilineComment",
+							start: /^\s*\/\*+\s*$/,
+							end: /^\s*\*+\/\s*$/,
+						},
+						{
+							type: 'multilineString',
+							start: /[^\\]".*\\\s*$/,
+							end: /[^\\]";?\s*$/,
+						},
+					],
+				});
 				expect(doc.lines[0].text).to.eq('foo');
 				var commentBlock1 = doc.lines[1].block.multilineComment;
 				expect(commentBlock1).to.have.length(4);
@@ -227,125 +244,12 @@ describe('linez', () => {
 				expect(commentBlock2[1].text).to.eq('     * foo');
 				expect(commentBlock2[2].text).to.eq('     * bar');
 				expect(commentBlock2[3].text).to.eq('     */');
-			});
-
-			it('format multiline comments', () => {
-				var doc = linez([
-					'    /**',
-					'    * foo',
-					'    * bar',
-					'    */',
-					'/**',
-					'    * foo',
-					'    * bar',
-					'    */',
-					'*/',
-				].join('\n'));
-				doc.lines.forEach(line => {
-					var multilineComment = line.block.multilineComment;
-					var prefix = "";
-					if (multilineComment) {
-						if (/^(\s+)/.test(line.text)) {
-							prefix = RegExp.$1;
-						}
-						multilineComment.forEach(line => {
-							if (/^\s*\*/.test(line.text)) {
-								line.text = prefix + " " + line.text.trim();
-							}
-						});
-					}
-				});
-
-				expect(doc.toString()).to.eq([
-					'    /**',
-					'     * foo',
-					'     * bar',
-					'     */',
-					'/**',
-					' * foo',
-					' * bar',
-					' */',
-					'*/',
-				].join('\n'));
-			});
-
-			it('format javascript multiline string', () => {
-				var doc = linez([
-					'var foo = "foo \\',
-					'bar \\',
-					'bar";',
-					'var bar = \'foo \\',
-					'bar \\',
-					'bar\';',
-				].join('\n'), {
-					blocks: [
-						{
-							type: 'multilineString',
-							start: /[^\\]".*\\\s*$/,
-							end: /[^\\]";?\s*$/,
-						},
-						{
-							type: 'multilineString',
-							start: /[^\\]'.*\\\s*$/,
-							end: /[^\\]';?\s*$/,
-						}
-					]
-				});
-				doc.lines.forEach(line => {
-					var multilineString = line.block.multilineString;
-					if (multilineString) {
-						multilineString.forEach(line => {
-							line.text = line.text.replace(/\\\s*$/, () => {
-								line.ending = '';
-								return '';
-							});
-						});
-					}
-				});
-				expect(doc.toString()).to.eq([
-					'var foo = "foo bar bar";',
-					'var bar = \'foo bar bar\';',
-				].join('\n'));
-			});
-
-			it('HTML tag test', () => {
-				var doc = linez([
-					'<html>',
-					'<head>',
-					'    <title>foo</title>',
-					'</head>',
-					'<body class="bar">',
-					'    bar',
-					'</body>',
-					'</html>',
-				].join('\n'), {
-					blocks: {
-						type: 'htmlHead',
-						start: /^\s*<head\b(?:[^<>]+)?>\s*$/,
-						end: /^\s*<\/head>\s*$/,
-					}
-				});
-				doc.lines.forEach(line => {
-					if (line.block.htmlHead) {
-						line.block.htmlHead.forEach(line => {
-							line.text = line.text.trim();
-						});
-					} else if (line.block.htmlBody) {
-						line.block.htmlBody.forEach(line => {
-							line.text = line.text.replace(/^(?:\t|    )/, "");
-						});
-					}
-				});
-				expect(doc.toString()).to.eq([
-					'<html>',
-					'<head>',
-					'<title>foo</title>',
-					'</head>',
-					'<body class="bar">',
-					'    bar',
-					'</body>',
-					'</html>',
-				].join('\n'));
+				expect(doc.lines[10].block).to.deep.eq({});
+				var multilineString = doc.lines[11].block.multilineString;
+				expect(multilineString).to.have.length(3);
+				expect(multilineString[0].text).to.eq('var foo = "foo \\');
+				expect(multilineString[1].text).to.eq('bar \\');
+				expect(multilineString[2].text).to.eq('bar";');
 			});
 
 		});

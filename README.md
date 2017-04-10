@@ -97,29 +97,22 @@ By default, the document will attempt to be decoded as utf8. This is the default
 
 ### configure(options: IOptions)
 
-Set the globle configures linez to use the supplied options. you can specify any number of newline character sequences in newlines property, and you can specify any number of code block options in block property.
+Set the global configures linez to use the supplied options. you can specify any number of newline character sequences in newlines property, and you can specify any number of code block options in block property.
 
 ```js
 linez.configure({
   newlines: ['\n', '\r\n', '\r', '\u000B'],
-  blocks: [
-    {
-      type: 'multilineString',
-      start: /[^\\]".*\\\s*$/,
-      end: /[^\\]";?\s*$/,
-    },
-    {
-      type: 'multilineString',
-      start: /[^\\]'.*\\\s*$/,
-      end: /[^\\]';?\s*$/,
-    }
-  ]
+	blocks: [{
+		type: "multilineComment",
+		start: /^\s*\/\*+\s*$/,
+		end: /^\s*\*+\/\s*$/,
+	}]
 });
 ```
 
 ### resetConfiguration()
 
-Resets the globle configuration to the default settings, using `/\r?\n/g` as the newlines regular expression， useing multiline comments options as code block settings.
+Resets the global configuration to the default settings, using `/\r?\n/g` as the newlines regular expression， useing multiline comments options as code block settings.
 
 
 ### Document
