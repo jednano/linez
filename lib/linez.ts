@@ -86,13 +86,21 @@ function parseLines(text: string, options: linez.Options) {
 	return lines;
 }
 
+function testString(str: string, expression: string|RegExp) {
+	if (expression instanceof RegExp) {
+		return expression.test(str);
+	} else {
+		return str.trim() === expression;
+	}
+}
+
 function addBlockProp(lines: linez.Line[], blockOptions: linez.BlockOptions) {
 	var blockLines: linez.Line[]|null;
 
 	lines.forEach((line: linez.Line) => {
-		if (blockOptions.start.test(line.text)) {
+		if (testString(line.text, blockOptions.start)) {
 			blockLines = [line];
-		} else if (blockOptions.end.test(line.text)) {
+		} else if (testString(line.text, blockOptions.end)) {
 			if (blockLines) {
 				blockLines.push(line);
 				blockLines[0].block[blockOptions.type] = blockLines;
@@ -171,8 +179,8 @@ namespace linez {
 
 	export interface BlockOptions {
 		type: string;
-		start: RegExp;
-		end: RegExp;
+		start: string|RegExp;
+		end: string|RegExp;
 	}
 
 	export function configure(options?: Options) {
@@ -182,7 +190,7 @@ namespace linez {
 	export function resetConfiguration() {
 		globalOptions = {
 			blocks: {
-				type: "multilineComment",
+				type: 'multilineComment',
 				start: /^\s*\/\*+\s*$/,
 				end: /^\s*\*+\/\s*$/,
 			},

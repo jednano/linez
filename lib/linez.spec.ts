@@ -220,9 +220,9 @@ describe('linez', () => {
 				].join('\n'), {
 					blocks: [
 						{
-							type: "multilineComment",
+							type: 'multilineComment',
 							start: /^\s*\/\*+\s*$/,
-							end: /^\s*\*+\/\s*$/,
+							end: '*/',
 						},
 						{
 							type: 'multilineString',
